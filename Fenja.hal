@@ -1,0 +1,147 @@
+﻿loadrt [KINS]KINEMATICS
+loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[KINS]JOINTS 
+loadrt hostmot2
+loadrt hm2_eth board_ip="10.10.10.10" config=" num_encoders=0 num_pwmgens=0 num_stepgens=5 sserial_port_0=00xxxx" 
+setp    hm2_7i76e.0.watchdog.timeout_ns 5000000
+loadrt pid names=pid.s
+loadrt and2 count=1
+loadrt lut5 count=1
+loadrt or2 count=1
+loadrt watchdog num_inputs=1
+
+addf hm2_7i76e.0.read          servo-thread
+addf motion-command-handler   servo-thread
+addf motion-controller        servo-thread
+addf pid.s.do-pid-calcs       servo-thread
+addf hm2_7i76e.0.write         servo-thread
+
+addf and2.0 servo-thread
+addf lut5.0 servo-thread
+addf or2.0 servo-thread
+addf watchdog.process servo-thread
+addf watchdog.set-timeouts servo-thread
+
+setp lut5.0.function 0x2
+setp watchdog.timeout-0 0.2
+
+# !TODO! VFD WATCHDOG
+# setp watchdog.enable-in 1
+
+
+setp hm2_7i76e.0.dpll.01.timer-us -50
+setp hm2_7i76e.0.stepgen.timer-number 1
+
+# Not-Halt/Stop
+
+net estop-watchdog-timeout => lut5.0.in-0
+sets estop-watchdog-timeout 1
+# !TODO! VFD Error
+net estop-vfd-error => lut5.0.in-1
+
+net estop-ext-1 or2.0.in0 <= hm2_7i76e.0.7i76.0.0.input-13-not
+net estop-ext-2 or2.0.in1 <= hm2_7i76e.0.7i76.0.0.input-15-not
+net estop-ext or2.0.out => lut5.0.in-2
+
+# Minimalmengenschmierung
+
+net coolant-mist      <=  iocontrol.0.coolant-mist
+net coolant-mist => hm2_7i76e.0.7i76.0.0.output-00
+
+# Absaugung
+
+net absaugung-1 halui.program.is-running => and2.0.in0
+net absaugung-2 halui.mode.is-auto => and2.0.in1
+net absaugung-3 and2.0.out => hm2_7i76e.0.7i76.0.0.output-01
+
+# Servo Endstufenfehler
+
+net hm2_7i76e.0.7i76.0.0.input-7 => joint.0.amp-fault-in
+net hm2_7i76e.0.7i76.0.0.input-6 => joint.1.amp-fault-in
+net hm2_7i76e.0.7i76.0.0.input-5 => joint.2.amp-fault-in
+
+#*******************
+#  SPINDLE S
+#*******************
+
+setp   pid.s.Pgain     [SPINDLE_9]P
+setp   pid.s.Igain     [SPINDLE_9]I
+setp   pid.s.Dgain     [SPINDLE_9]D
+setp   pid.s.bias      [SPINDLE_9]BIAS
+setp   pid.s.FF0       [SPINDLE_9]FF0
+setp   pid.s.FF1       [SPINDLE_9]FF1
+setp   pid.s.FF2       [SPINDLE_9]FF2
+setp   pid.s.deadband  [SPINDLE_9]DEADBAND
+setp   pid.s.maxoutput [SPINDLE_9]MAX_OUTPUT
+setp   pid.s.error-previous-target true
+
+net spindle-index-enable  <=> pid.s.index-enable
+net spindle-enable        =>  pid.s.enable
+net spindle-vel-cmd-rpm     => pid.s.command
+net spindle-vel-fb-rpm      => pid.s.feedback
+net spindle-output        <=  pid.s.output
+
+# ---setup spindle control signals---
+
+net spindle-vel-cmd-rps        <=  spindle.0.speed-out-rps
+net spindle-vel-cmd-rps-abs    <=  spindle.0.speed-out-rps-abs
+net spindle-vel-cmd-rpm        <=  spindle.0.speed-out
+net spindle-vel-cmd-rpm-abs    <=  spindle.0.speed-out-abs
+net spindle-enable             <=  spindle.0.on
+net spindle-cw                 <=  spindle.0.forward
+net spindle-ccw                <=  spindle.0.reverse
+net spindle-brake              <=  spindle.0.brake
+net spindle-revs               =>  spindle.0.revs
+net spindle-at-speed           =>  spindle.0.at-speed
+net spindle-vel-fb-rps         =>  spindle.0.speed-in
+net spindle-index-enable      <=>  spindle.0.index-enable
+
+# ---Setup spindle at speed signals---
+
+sets spindle-at-speed true
+
+
+#******************************
+# connect miscellaneous signals
+#******************************
+
+#  ---HALUI signals---
+
+net joint-select-a        halui.axis.x.select
+net x-is-homed            halui.joint.0.is-homed
+net jog-x-pos             halui.axis.x.plus
+net jog-x-neg             halui.axis.x.minus
+net jog-x-analog          halui.axis.x.analog
+net joint-select-b        halui.axis.y.select
+net y-is-homed            halui.joint.1.is-homed
+net jog-y-pos             halui.axis.y.plus
+net jog-y-neg             halui.axis.y.minus
+net jog-y-analog          halui.axis.y.analog
+net joint-select-c        halui.axis.z.select
+net z-is-homed            halui.joint.2.is-homed
+net jog-z-pos             halui.axis.z.plus
+net jog-z-neg             halui.axis.z.minus
+net jog-z-analog          halui.axis.z.analog
+net jog-selected-pos      halui.axis.selected.plus
+net jog-selected-neg      halui.axis.selected.minus
+net spindle-manual-cw     halui.spindle.0.forward
+net spindle-manual-ccw    halui.spindle.0.reverse
+net spindle-manual-stop   halui.spindle.0.stop
+net machine-is-on         halui.machine.is-on
+net jog-speed             halui.axis.jog-speed 
+net MDI-mode              halui.mode.is-mdi
+
+#  ---probe signal---
+
+net probe-in     =>  motion.probe-input
+
+#  ---motion control signals---
+
+net in-position               <=  motion.in-position
+net machine-is-enabled        <=  motion.motion-enabled
+
+#  ---digital in / out signals---
+
+#  ---estop signals---
+
+net estop-out     <=  iocontrol.0.user-enable-out
+net estop-signal lut5.0.out => iocontrol.0.emc-enable-in
