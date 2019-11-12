@@ -49,9 +49,9 @@ net coolant-mist => hm2_7i76e.0.7i76.0.0.output-00
 
 # Absaugung
 
-net absaugung-1 halui.program.is-running => and2.0.in0
-net absaugung-2 halui.mode.is-auto => and2.0.in1
-net absaugung-3 and2.0.out => hm2_7i76e.0.7i76.0.0.output-01
+net and2.0.in0 <= halui.program.is-running
+net and2.0.in1 <= halui.mode.is-auto
+net and2.0.out => hm2_7i76e.0.7i76.0.0.output-01
 
 # Servo Endstufenfehler
 
