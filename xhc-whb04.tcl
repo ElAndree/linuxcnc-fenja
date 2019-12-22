@@ -107,7 +107,7 @@ proc connect_pins {} {
       puts stderr "$::progname: skipping button $bname marked <$thepin>"
       continue
     }
-    set fullbname xhc-whb04.button-$bname
+    set fullbname whb.button-$bname
     if !$::xhc_whb04_quiet {
       if ![pin_exists $fullbname] {
         puts stderr "$::progname: !!! <$fullbname> pin does not exist, continuing"
@@ -185,7 +185,7 @@ proc wheel_setup {jogmode} {
                     #        jog-counts are type s32 (~ +/-2e9)
   setp pendant_util.k $kvalue
 
-  makenet pendant:jog-prescale    <= xhc-whb04.jog.scale
+  makenet pendant:jog-prescale    <= whb.jog.scale
   makenet pendant:jog-prescale    => pendant_util.divide-by-k-in
 
   makenet pendant:jog-scale       <= pendant_util.divide-by-k-out
@@ -193,8 +193,8 @@ proc wheel_setup {jogmode} {
   #           and axis.$coord.jog-scale
   #           joint.$jnum.jog-scale (if applicable)
 
-  makenet pendant:wheel-counts     <= xhc-whb04.jog.counts
-  makenet pendant:wheel-counts-neg <= xhc-whb04.jog.counts-neg
+  makenet pendant:wheel-counts     <= whb.jog.counts
+  makenet pendant:wheel-counts-neg <= whb.jog.counts-neg
 
   set anames        {x y z a}
   set available_idx {0 1 2 3}
@@ -249,11 +249,11 @@ proc wheel_setup {jogmode} {
     # accommodate existing signames for halui outpins:
     makenet [existing_outpin_signame halui.axis.$coord.pos-feedback pendant:pos-$coord] \
                                   <= halui.axis.$coord.pos-feedback \
-                                  => xhc-whb04.$acoord.pos-absolute
+                                  => whb.$acoord.pos-absolute
 
     makenet [existing_outpin_signame halui.axis.$coord.pos-relative pendant:pos-rel-$coord] \
                                   <= halui.axis.$coord.pos-relative \
-                                  => xhc-whb04.$acoord.pos-relative
+                                  => whb.$acoord.pos-relative
 
     makenet pendant:jog-scale => axis.$coord.jog-scale
 
@@ -263,7 +263,7 @@ proc wheel_setup {jogmode} {
 
 
     set COORD [string toupper $coord]
-    makenet pendant:jog-$coord <= xhc-whb04.jog.enable-$acoord \
+    makenet pendant:jog-$coord <= whb.jog.enable-$acoord \
                                => axis.$coord.jog-enable
     switch $jogmode {
       vnormal {
@@ -327,20 +327,20 @@ proc wheel_setup {jogmode} {
   makenet pendant:wheel-counts  => halui.spindle.0.override.counts
 
   makenet pendant:feed-override-enable => halui.feed-override.count-enable \
-                                       <= xhc-whb04.jog.enable-feed-override
+                                       <= whb.jog.enable-feed-override
 
   makenet pendant:spindle-override-enable => halui.spindle.0.override.count-enable \
-                                          <= xhc-whb04.jog.enable-spindle-override
+                                          <= whb.jog.enable-spindle-override
 
 
   # accommodate existing signames for motion outpins
   makenet [existing_outpin_signame   motion.current-vel pendant:feed-value] \
                                   <= motion.current-vel \
-                                  => xhc-whb04.feed-value
+                                  => whb.feed-value
 
   makenet [existing_outpin_signame spindle.0.speed-out-rps-abs pendant:spindle-rps] \
                                 <= spindle.0.speed-out-rps-abs \
-                                => xhc-whb04.spindle-rps
+                                => whb.spindle-rps
 
   # accommodate existing signames for halui outpins:
   makenet [existing_outpin_signame   halui.max-velocity.value pendant:jog-speed] \
@@ -348,11 +348,11 @@ proc wheel_setup {jogmode} {
 
   makenet [existing_outpin_signame   halui.feed-overide.value pendant:feed-override] \
                                   <= halui.feed-override.value \
-                                  => xhc-whb04.feed-override
+                                  => whb.feed-override
 
   makenet [existing_outpin_signame   halui.spindle.0.override.value pendant:spindle-override] \
                                   <= halui.spindle.0.override.value \
-                                  => xhc-whb04.spindle-override
+                                  => whb.spindle-override
 
 } ;# wheel_setup
 
@@ -372,7 +372,7 @@ proc existing_outpin_signame {pinname newsigname} {
 
 proc std_start_pause_button {} {
   # hardcoded setup for button-start-pause
-  makenet pendant:start-or-pause  <= xhc-whb04.button-start-pause \
+  makenet pendant:start-or-pause  <= whb.button-start-pause \
                                   => pendant_util.start-or-pause
 
   makenet pendant:program-resume  <= pendant_util.resume \
@@ -510,7 +510,7 @@ if ![info exists ::XHC_WHB04_CONFIG(inch_or_mm)] {
   set ::XHC_WHB04_CONFIG(inch_or_mm) mm
 }
 switch -glob $::XHC_WHB04_CONFIG(inch_or_mm) {
-  in*     {setp xhc-whb04.inch-icon 1}
+  in*     {setp whb.inch-icon 1}
   default {}
 }
 
