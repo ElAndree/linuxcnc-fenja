@@ -448,7 +448,7 @@ if {[array names ::XHC_WHB04_CONFIG] == ""} {
   err_exit "Missing stanza: \[XHC_WHB04_CONFIG\]"
 }
 if {[array names ::XHC_WHB04_BUTTONS] == ""} {
-  err_exit "Missing stanza: \[XHC_WHB04_BUTTONS\]"
+  #err_exit "Missing stanza: \[XHC_WHB04_BUTTONS\]"
 }
 
 foreach name [array names ::XHC_WHB04_CONFIG] {
