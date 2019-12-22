@@ -544,7 +544,7 @@ if [info exists ::XHC_WHB04_CONFIG(coords)] {
 if ![info exists ::XHC_WHB04_CONFIG(threadname)] {
   set ::XHC_WHB04_CONFIG(threadname) "servo-thread" ;# default
 }
-loadrt xhc_whb04_util names=pendant_util
+loadrt xhc_hb04_util names=pendant_util
 addf   pendant_util $::XHC_WHB04_CONFIG(threadname)
 
 # If twopass, do not call procs in pass0 that test pin
