@@ -2,6 +2,27 @@
 # WHB04B-6 jog dial configuration
 # ######################################################################
 
+# BEGIN Note: spindle signals are ususally listed in the main .hal file
+#
+#net  spindle.is-on                      motion.spindle-on
+#net  spindle.start                      halui.spindle.start         
+#net  spindle.stop                       halui.spindle.stop
+#net  spindle.forward                    halui.spindle.forward
+#
+#net  spindle.reverse                    halui.spindle.reverse
+#net  spindle.runs-forward               motion.spindle-forward     
+#net  spindle.runs-reverse               motion.spindle-reverse
+#
+#net  spindle.increase                   halui.spindle.increase
+#net  spindle.decrease                   halui.spindle.decrease
+#net  spindle.spindle-override.value     halui.spindle-override.value
+#net  spindle.spindle-override.increase  halui.spindle-override.increase
+#net  spindle.spindle-override.decrease  halui.spindle-override.decrease
+#
+#net  spindle.velocity.abs-rpm           motion.spindle-speed-out-abs
+#
+# END Note
+
 # ######################################################################
 # Load components
 # ######################################################################
@@ -22,6 +43,7 @@ loadrt scale names=scale.axis.x,scale.axis.y,scale.axis.z
 addf   scale.axis.x         servo-thread
 addf   scale.axis.y         servo-thread
 addf   scale.axis.z         servo-thread
+addf   scale.axis.a         servo-thread
 setp   scale.axis.x.gain    0.01 
 setp   scale.axis.y.gain    0.01 
 setp   scale.axis.z.gain    0.01
@@ -49,51 +71,58 @@ net  pdnt.program.stop                   whb.halui.program.stop             halu
 net  pdnt.joint.X.select                 whb.halui.joint.x.select           halui.joint.0.select
 net  pdnt.joint.Y.select                 whb.halui.joint.y.select           halui.joint.1.select
 net  pdnt.joint.Z.select                 whb.halui.joint.z.select           halui.joint.2.select
+#net pdnt.joint.A.select                 whb.halui.joint.a.select           halui.joint.3.select
 
 net  pdnt.axis.0.jog-scale               whb.axis.0.jog-scale               scale.axis.x.in      
 net  pdnt.axis.1.jog-scale               whb.axis.1.jog-scale               scale.axis.y.in      
 net  pdnt.axis.2.jog-scale               whb.axis.2.jog-scale               scale.axis.z.in  
+#net  pdnt.axis.3.jog-scale               whb.axis.3.jog-scale               scale.axis.a.in     
 
 net  scale.axis.0.jog-scale              scale.axis.x.out                   axis.x.jog-scale
 net  scale.axis.1.jog-scale              scale.axis.y.out                   axis.y.jog-scale
 net  scale.axis.2.jog-scale              scale.axis.z.out                   axis.z.jog-scale
+#net  scale.axis.3.jog-scale              scale.axis.a.out                   axis.a.jog-scale
 
 net  pdnt.axis.0.jog-counts              whb.axis.0.jog-counts              ilowpass.jog.x.in
 net  pdnt.axis.1.jog-counts              whb.axis.1.jog-counts              ilowpass.jog.y.in
 net  pdnt.axis.2.jog-counts              whb.axis.2.jog-counts              ilowpass.jog.z.in
+#net  pdnt.axis.3.jog-counts              whb.axis.3.jog-counts              ilowpass.jog.a.in
 
 net  pdnt.ilowpass.jog.0.jog-counts      ilowpass.jog.x.out                 axis.x.jog-counts
 net  pdnt.ilowpass.jog.1.jog-counts      ilowpass.jog.y.out                 axis.y.jog-counts
 net  pdnt.ilowpass.jog.2.jog-counts      ilowpass.jog.z.out                 axis.z.jog-counts
+#net  pdnt.ilowpass.jog.3.jog-counts      ilowpass.jog.a.out                 axis.a.jog-counts
 
 net  pdnt.axis.0.jog-enable              whb.axis.0.jog-enable              axis.x.jog-enable
 net  pdnt.axis.1.jog-enable              whb.axis.1.jog-enable              axis.y.jog-enable
 net  pdnt.axis.2.jog-enable              whb.axis.2.jog-enable              axis.z.jog-enable
+#net pdnt.axis.3.jog-enable               whb.axis.3.jog-enable              axis.a.jog-enable
 
 net  pdnt.axis.0.jog-vel-mode            whb.axis.0.jog-vel-mode            axis.x.jog-vel-mode
 net  pdnt.axis.1.jog-vel-mode            whb.axis.1.jog-vel-mode            axis.y.jog-vel-mode
 net  pdnt.axis.2.jog-vel-mode            whb.axis.2.jog-vel-mode            axis.z.jog-vel-mode
+#net pdnt.axis.3.jog-vel-mode            whb.axis.3.jog-vel-mode            axis.a.jog-vel-mode
 
 
 # Connect macro buttons to mdi commands
 
-#net pdnt.macro.1                        whb.button.macro-1                 halui.mdi-command-01
-#net pdnt.macro.2                        whb.button.macro-2                 halui.mdi-command-02
-#net pdnt.macro.3                        whb.button.macro-3		   halui.mdi-command-03
-#net pdnt.macro.4                        whb.button.macro-4                 halui.mdi-command-04
+net pdnt.macro.1                        whb.button.macro-1                 halui.mdi-command-01
+net pdnt.macro.2                        whb.button.macro-2                 halui.mdi-command-02
+net pdnt.macro.3                        whb.button.macro-3		   halui.mdi-command-03
+net pdnt.macro.4                        whb.button.macro-4                 halui.mdi-command-04
 
-#net pdnt.macro.6                        whb.button.macro-6                 halui.mdi-command-06
+net pdnt.macro.6                        whb.button.macro-6                 halui.mdi-command-06
              
-#net pdnt.macro.8                        whb.button.macro-8                 halui.mdi-command-08
-#net pdnt.macro.9                        whb.button.macro-9                 halui.mdi-command-09
-#net pdnt.macro.10                       whb.button.macro-10                halui.mdi-command-10
+net pdnt.macro.8                        whb.button.macro-8                 halui.mdi-command-08
+net pdnt.macro.9                        whb.button.macro-9                 halui.mdi-command-09
+net pdnt.macro.10                       whb.button.macro-10                halui.mdi-command-10
 
-#net pdnt.macro.11                       whb.button.macro-11                halui.mdi-command-11
-#net pdnt.macro.12                       whb.button.macro-12                halui.mdi-command-12
-#net pdnt.macro.13                      whb.button.macro-13                halui.home-all
-#net pdnt.macro.14                       whb.button.macro-14                halui.mdi-command-14
-#net pdnt.macro.15                       whb.button.macro-15                halui.mdi-command-15
-#net pdnt.macro.16                       whb.button.macro-16                halui.mdi-command-16
+net pdnt.macro.11                       whb.button.macro-11                halui.mdi-command-11
+net pdnt.macro.12                       whb.button.macro-12                halui.mdi-command-12
+net pdnt.macro.13                      whb.button.macro-13                halui.home-all
+net pdnt.macro.14                       whb.button.macro-14                halui.mdi-command-14
+net pdnt.macro.15                       whb.button.macro-15                halui.mdi-command-15
+net pdnt.macro.16                       whb.button.macro-16                halui.mdi-command-16
 
 
 # Connect reset, stop, start/pause/resume buttons to halui
@@ -107,17 +136,17 @@ net  pdnt.button.stop                    whb.button.stop
 net  pdnt.button.start-pause             whb.button.start-pause     
 
 # Connect special positions signals
-#net  pdnt.button.m-home                  whb.button.m-home                  halui.mdi-command-05
+net  pdnt.button.m-home                  whb.button.m-home                  halui.mdi-command-05
 #net  pdnt.button.safe-z                  whb.button.safe-z                  halui.mdi-command-17
 
-#net  pdnt.button.w-home                  whb.button.w-home                  halui.mdi-command-07
-#net  pdnt.button.s-on-off                whb.button.s-on-off                halui.mdi-command-18
+net  pdnt.button.w-home                  whb.button.w-home                  halui.mdi-command-07
+net  pdnt.button.s-on-off                whb.button.s-on-off                halui.mdi-command-18
 
 # unused, just exposes pendant interna
 net pdnt.button.fn                       whb.button.fn
 
 # probe command
-#net  pdnt.button.probe-z                 whb.button.probe-z                halui.mdi-command-19
+net  pdnt.button.probe-z                 whb.button.probe-z                halui.mdi-command-19
 
 # unused, just exposes pendant interna
 net  pdnt.button.mode-continuous         whb.button.mode-continuous
@@ -137,6 +166,15 @@ net  spindle.spindle-override.value      whb.halui.spindle-override.value		halui
 net  spindle.spindle-override.increase   whb.halui.spindle-override.increase	halui.spindle.0.override.increase
 net  spindle.spindle-override.decrease   whb.halui.spindle-override.decrease	halui.spindle.0.override.decrease
 net  spindle.velocity.abs-rpm            whb.motion.spindle-speed-abs
+
+# Connect machine mode related signals
+net  pdnt.halui.mode.auto                whb.halui.mode.auto                halui.mode.auto
+net  pdnt.halui.mode.joint               whb.halui.mode.joint               halui.mode.joint
+net  pdnt.halui.mode.manual              whb.halui.mode.manual              halui.mode.manual
+net  pdnt.halui.mode.mdi                 whb.halui.mode.mdi                 halui.mode.mdi
+net  pdnt.halui.mode.is-joint            halui.mode.is-joint                whb.halui.mode.is-joint
+net  pdnt.halui.mode.is-manual           halui.mode.is-manual               whb.halui.mode.is-manual
+net  pdnt.halui.mode.is-mdi              halui.mode.is-mdi                  whb.halui.mode.is-mdi
 
 # Connect feed rate related signals
 net  pdnt.halui.feed-override.scale        whb.halui.feed-override.scale        halui.feed-override.scale
@@ -161,11 +199,7 @@ net  pdnt.motion.current-vel             motion.current-vel                 whb.
 net  pdnt.halui.axis.0.pos-feedback      halui.axis.x.pos-feedback          whb.halui.axis.0.pos-feedback
 net  pdnt.halui.axis.1.pos-feedback      halui.axis.y.pos-feedback          whb.halui.axis.1.pos-feedback
 net  pdnt.halui.axis.2.pos-feedback      halui.axis.z.pos-feedback          whb.halui.axis.2.pos-feedback
-#net  pdnt.halui.axis.3.pos-feedback      halui.axis.a.pos-feedback          whb.halui.axis.3.pos-feedback
 
 net  pdnt.halui.axis.0.pos-relative      halui.axis.x.pos-relative          whb.halui.axis.0.pos-relative
 net  pdnt.halui.axis.1.pos-relative      halui.axis.y.pos-relative          whb.halui.axis.1.pos-relative
 net  pdnt.halui.axis.2.pos-relative      halui.axis.z.pos-relative          whb.halui.axis.2.pos-relative
-#net  pdnt.halui.axis.3.pos-relative      halui.axis.a.pos-relative          whb.halui.axis.3.pos-relative
-
-
