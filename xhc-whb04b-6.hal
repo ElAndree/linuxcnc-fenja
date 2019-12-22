@@ -34,13 +34,14 @@ setp   scale.axis.z.offset  0
 # ######################################################################
 
 # Connect emergency stop signals
+net  pdnt.machine.is-on                  halui.machine.is-on                => whb.halui.machine.is-on
 net  pdnt.machine.on                     whb.halui.machine.on               halui.machine.on
 net  pdnt.machine.off                    whb.halui.machine.off              halui.machine.off
 
 # Connect program related signals
 net  pdnt.program.is-idle                whb.halui.program.is-idle          halui.program.is-idle
 net  pdnt.program.is-paused              whb.halui.program.is-paused        halui.program.is-paused
-net  pdnt.program.is-running             whb.halui.program.is-running       halui.program.is-running
+net  pdnt.program.is-running             whb.halui.program.is-running       <= halui.program.is-running
 net  pdnt.program.resume                 whb.halui.program.resume           halui.program.resume
 net  pdnt.program.pause                  whb.halui.program.pause            halui.program.pause
 net  pdnt.program.run                    whb.halui.program.run              halui.program.run
