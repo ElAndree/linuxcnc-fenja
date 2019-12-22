@@ -439,7 +439,7 @@ if { [namespace exists ::tp] && ([::tp::passnumber] == 0) } {
 }
 
 set libtag "LIB:"
-set cfg ${libtag}xhc-whb04-layout2.cfg ;# default
+set cfg ${libtag}xhc-hb04-layout2.cfg ;# default
 
 if ![info exists ::HAL(HALUI)] {
   err_exit "\[HAL\]HALUI is not set"
@@ -457,8 +457,8 @@ foreach name [array names ::XHC_WHB04_CONFIG] {
 
 if [info exists ::XHC_WHB04_CONFIG(layout)] {
   switch ${::XHC_WHB04_CONFIG(layout)} {
-    1 {set cfg ${libtag}xhc-whb04-layout1.cfg}
-    2 {set cfg ${libtag}xhc-whb04-layout2.cfg}
+    1 {set cfg ${libtag}xhc-hb04-layout1.cfg}
+    2 {set cfg ${libtag}xhc-hb04-layout2.cfg}
     default {
       set msg "Nonstandard layout:<$::XHC_WHB04_CONFIG(layout)>"
       set cfg $::XHC_WHB04_CONFIG(layout)
