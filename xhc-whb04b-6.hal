@@ -34,7 +34,6 @@ setp   scale.axis.z.offset  0
 # ######################################################################
 
 # Connect emergency stop signals
-net  pdnt.machine.is-on                  halui.machine.is-on                whb.halui.machine.is-on
 net  pdnt.machine.on                     whb.halui.machine.on               halui.machine.on
 net  pdnt.machine.off                    whb.halui.machine.off              halui.machine.off
 
@@ -52,48 +51,29 @@ net  pdnt.joint.X.select                 whb.halui.joint.x.select           halu
 net  pdnt.joint.Y.select                 whb.halui.joint.y.select           halui.joint.1.select
 net  pdnt.joint.Z.select                 whb.halui.joint.z.select           halui.joint.2.select
 
-
-# Connect jog signals for step and continuous mode
-#net  pdnt.stepgen.00.maxvel              hpg.stepgen.00.maxvel              whb.stepgen.00.maxvel
-#net  pdnt.stepgen.01.maxvel              hpg.stepgen.01.maxvel              whb.stepgen.01.maxvel
-#net  pdnt.stepgen.02.maxvel              hpg.stepgen.02.maxvel              whb.stepgen.02.maxvel
-#net  pdnt.stepgen.03.maxvel              hpg.stepgen.03.maxvel              whb.stepgen.03.maxvel
-
-#net  pdnt.stepgen.00.position-scale      hpg.stepgen.00.position-scale      whb.stepgen.00.position-scale
-#net  pdnt.stepgen.01.position-scale      hpg.stepgen.01.position-scale      whb.stepgen.01.position-scale
-#net  pdnt.stepgen.02.position-scale      hpg.stepgen.02.position-scale      whb.stepgen.02.position-scale
-#net  pdnt.stepgen.03.position-scale      hpg.stepgen.03.position-scale      whb.stepgen.03.position-scale
-
-
 net  pdnt.axis.0.jog-scale               whb.axis.0.jog-scale               scale.axis.x.in      
 net  pdnt.axis.1.jog-scale               whb.axis.1.jog-scale               scale.axis.y.in      
 net  pdnt.axis.2.jog-scale               whb.axis.2.jog-scale               scale.axis.z.in  
-#net  pdnt.axis.3.jog-scale               whb.axis.3.jog-scale               scale.axis.a.in     
 
 net  scale.axis.0.jog-scale              scale.axis.x.out                   axis.x.jog-scale
 net  scale.axis.1.jog-scale              scale.axis.y.out                   axis.y.jog-scale
 net  scale.axis.2.jog-scale              scale.axis.z.out                   axis.z.jog-scale
-#net  scale.axis.3.jog-scale              scale.axis.a.out                   axis.a.jog-scale
 
 net  pdnt.axis.0.jog-counts              whb.axis.0.jog-counts              ilowpass.jog.x.in
 net  pdnt.axis.1.jog-counts              whb.axis.1.jog-counts              ilowpass.jog.y.in
 net  pdnt.axis.2.jog-counts              whb.axis.2.jog-counts              ilowpass.jog.z.in
-#net  pdnt.axis.3.jog-counts              whb.axis.3.jog-counts              ilowpass.jog.a.in
 
 net  pdnt.ilowpass.jog.0.jog-counts      ilowpass.jog.x.out                 axis.x.jog-counts
 net  pdnt.ilowpass.jog.1.jog-counts      ilowpass.jog.y.out                 axis.y.jog-counts
 net  pdnt.ilowpass.jog.2.jog-counts      ilowpass.jog.z.out                 axis.z.jog-counts
-#net  pdnt.ilowpass.jog.3.jog-counts      ilowpass.jog.a.out                 axis.a.jog-counts
 
 net  pdnt.axis.0.jog-enable              whb.axis.0.jog-enable              axis.x.jog-enable
 net  pdnt.axis.1.jog-enable              whb.axis.1.jog-enable              axis.y.jog-enable
 net  pdnt.axis.2.jog-enable              whb.axis.2.jog-enable              axis.z.jog-enable
-#net pdnt.axis.3.jog-enable               whb.axis.3.jog-enable              axis.a.jog-enable
 
 net  pdnt.axis.0.jog-vel-mode            whb.axis.0.jog-vel-mode            axis.x.jog-vel-mode
 net  pdnt.axis.1.jog-vel-mode            whb.axis.1.jog-vel-mode            axis.y.jog-vel-mode
 net  pdnt.axis.2.jog-vel-mode            whb.axis.2.jog-vel-mode            axis.z.jog-vel-mode
-#net pdnt.axis.3.jog-vel-mode            whb.axis.3.jog-vel-mode            axis.a.jog-vel-mode
 
 
 # Connect macro buttons to mdi commands
