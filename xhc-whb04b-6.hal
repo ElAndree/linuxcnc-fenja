@@ -60,8 +60,7 @@ net  pdnt.machine.on                     whb.halui.machine.on               halu
 net  pdnt.machine.off                    whb.halui.machine.off              halui.machine.off
 
 # Connect program related signals
-net is-running <= halui.program.is-running
-net  pdnt.program.is-running             whb.halui.program.is-running       is-running
+#net  pdnt.program.is-running             whb.halui.program.is-running       is-running
 net  pdnt.program.is-idle                whb.halui.program.is-idle          halui.program.is-idle
 net  pdnt.program.is-paused              whb.halui.program.is-paused        halui.program.is-paused
 net  pdnt.program.resume                 whb.halui.program.resume           halui.program.resume
