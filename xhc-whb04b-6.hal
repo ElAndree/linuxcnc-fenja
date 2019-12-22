@@ -117,7 +117,7 @@ net  pdnt.button.start-pause             whb.button.start-pause
 net pdnt.button.fn                       whb.button.fn
 
 # probe command
-net  pdnt.button.probe-z                 whb.button.probe-z                halui.mdi-command-19
+#net  pdnt.button.probe-z                 whb.button.probe-z                halui.mdi-command-19
 
 # unused, just exposes pendant interna
 net  pdnt.button.mode-continuous         whb.button.mode-continuous
