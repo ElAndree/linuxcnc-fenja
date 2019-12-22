@@ -1,4 +1,4 @@
-﻿loadrt [KINS]KINEMATICS
+loadrt [KINS]KINEMATICS
 loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[KINS]JOINTS 
 loadrt hostmot2
 loadrt hm2_eth board_ip="10.10.10.10" config=" num_encoders=0 num_pwmgens=0 num_stepgens=5 sserial_port_0=00xxxx" 
