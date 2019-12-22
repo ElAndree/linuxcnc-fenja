@@ -34,7 +34,7 @@ setp   scale.axis.z.offset  0
 # ######################################################################
 
 # Connect emergency stop signals
-net  pdnt.machine.is-on                  halui.machine.is-on                => whb.halui.machine.is-on
+net  pdnt.machine.is-on                  machine-is-on                      whb.halui.machine.is-on
 net  pdnt.machine.on                     whb.halui.machine.on               halui.machine.on
 net  pdnt.machine.off                    whb.halui.machine.off              halui.machine.off
 
