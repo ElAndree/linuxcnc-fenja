@@ -495,7 +495,7 @@ if [info exists ::XHC_WHB04_CONFIG(sequence)] {
   set dashs ""
 }
 
-set cmd "loadusr -W xhc-whb04b-6 $dashx $dashs -I $cfg -H"
+set cmd "loadusr -W xhc-whb04b-6 -H"
 if [catch {eval $cmd} msg] {
   set msg "\n$::progname: loadusr xhc-whb04:\n<$msg>\n\n"
   set msg "$msg Is it plugged in?\n\n"
