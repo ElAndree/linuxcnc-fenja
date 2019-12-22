@@ -77,23 +77,23 @@ net  pdnt.axis.2.jog-vel-mode            whb.axis.2.jog-vel-mode            axis
 
 # Connect macro buttons to mdi commands
 
-net pdnt.macro.1                        whb.button.macro-1                 halui.mdi-command-01
-net pdnt.macro.2                        whb.button.macro-2                 halui.mdi-command-02
-net pdnt.macro.3                        whb.button.macro-3		   halui.mdi-command-03
-net pdnt.macro.4                        whb.button.macro-4                 halui.mdi-command-04
+#net pdnt.macro.1                        whb.button.macro-1                 halui.mdi-command-01
+#net pdnt.macro.2                        whb.button.macro-2                 halui.mdi-command-02
+#net pdnt.macro.3                        whb.button.macro-3		   halui.mdi-command-03
+#net pdnt.macro.4                        whb.button.macro-4                 halui.mdi-command-04
 
-net pdnt.macro.6                        whb.button.macro-6                 halui.mdi-command-06
+#net pdnt.macro.6                        whb.button.macro-6                 halui.mdi-command-06
              
-net pdnt.macro.8                        whb.button.macro-8                 halui.mdi-command-08
-net pdnt.macro.9                        whb.button.macro-9                 halui.mdi-command-09
-net pdnt.macro.10                       whb.button.macro-10                halui.mdi-command-10
+#net pdnt.macro.8                        whb.button.macro-8                 halui.mdi-command-08
+#net pdnt.macro.9                        whb.button.macro-9                 halui.mdi-command-09
+#net pdnt.macro.10                       whb.button.macro-10                halui.mdi-command-10
 
-net pdnt.macro.11                       whb.button.macro-11                halui.mdi-command-11
-net pdnt.macro.12                       whb.button.macro-12                halui.mdi-command-12
-net pdnt.macro.13                      whb.button.macro-13                halui.home-all
-net pdnt.macro.14                       whb.button.macro-14                halui.mdi-command-14
-net pdnt.macro.15                       whb.button.macro-15                halui.mdi-command-15
-net pdnt.macro.16                       whb.button.macro-16                halui.mdi-command-16
+#net pdnt.macro.11                       whb.button.macro-11                halui.mdi-command-11
+#net pdnt.macro.12                       whb.button.macro-12                halui.mdi-command-12
+#net pdnt.macro.13                      whb.button.macro-13                halui.home-all
+#net pdnt.macro.14                       whb.button.macro-14                halui.mdi-command-14
+#net pdnt.macro.15                       whb.button.macro-15                halui.mdi-command-15
+#net pdnt.macro.16                       whb.button.macro-16                halui.mdi-command-16
 
 
 # Connect reset, stop, start/pause/resume buttons to halui
