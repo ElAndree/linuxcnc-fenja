@@ -1,0 +1,112 @@
+#=======================================================================#
+#Custom Hal:								#
+#Hal Datei für: - Modbus (RS485) Kommunikation mit POWTRAN FU		#
+#(Diese Datei wird bei Ausführung von stepconf überschrieben!!)		#
+#									#
+#Michael Sutter, last edit: 10.07.2019					#
+#=======================================================================#
+#=======================================================================#
+#.ini Datei laden:
+
+loadusr -W mb2hal config=mb2hal.ini
+
+#=======================================================================#
+#Funktionen laden und initialisieren:
+
+loadrt mux4 names=mux4.fu.runmode						#Multiplexer 		-> Wählt 1 von 4 Zuständen aus Liste (je nach Zustand von .sel)
+loadrt mult2 names=mult2.fu.freq.send,mult2.fu.freq.return			#Multiplikation 	-> Multipliziert 2 Signale
+loadrt limit1 names=limit1.fu.send.freq.check,limit1.fu.return.drz.check	#Grenzwertüberprüfung 	-> Prüft ob Wert zwischen Max und Min-Wert
+loadrt comp names=comp.fu.return.error.state					#Komparator 		-> Prüft ob Wert grösser oder kleiner ist als Sollwert	
+loadrt and2 names=and2.read.estop						#UND Verknüpfung 	-> Prüft ob beie Eingänge 1 sind
+loadrt estop_latch names=estop_latch.axis					#Notstop 		-> Schaltet Notstop ein oder aus
+loadrt near names=near.soll.drz							#Bereichsprüfung 	-> Prüft ob Werte innerhalb eines bestimmten Bereichs
+
+#Hal Komponenten dem Servo-Thread zuweisen:
+#(Servo-thread -> für langsamere Aufgaben (reicht für Modbus))
+
+addf mux4.fu.runmode servo-thread
+addf mult2.fu.freq.send servo-thread
+addf mult2.fu.freq.return servo-thread
+addf limit1.fu.send.freq.check servo-thread
+addf limit1.fu.return.drz.check servo-thread
+addf comp.fu.return.error.state servo-thread
+addf and2.read.estop servo-thread
+addf estop_latch.axis servo-thread
+addf near.soll.drz servo-thread
+
+#=======================================================================#
+#Spindel Start / Stop:
+#Parameter: Start Vorwärts (CW) / Start Rückwärts (CCW) / Stop
+
+setp mux4.fu.runmode.in0 6						# Stop (Bremsen...Stop)	-> Powtran Register: 0x0006
+setp mux4.fu.runmode.in1 2						# Start Rückwärts (CCW)	-> Powtran Register: 0x0002
+setp mux4.fu.runmode.in2 6						# Stop (Bremsen...Stop)	-> Powtran Register: 0x0006
+setp mux4.fu.runmode.in3 1						# Start Vorwärts (CW)	-> Powtran Register: 0x0001
+
+net spindle-on motion.spindle-on => mux4.fu.runmode.sel0		#Spindel Start (Softwarebutton LinuxCNC) -> Parameter Rückwärts (CCW) laden
+net spindle-fwd motion.spindle-forward => mux4.fu.runmode.sel1		#Spindel Vorwärts (Softwarebutton LinuxCNC) -> Parameter Vorwärts (CW) laden
+net spindle-runmode mux4.fu.runmode.out => powtran.runmode.command	#-> Parameter an mb2hal.ini übergeben und an POWTRAN senden...
+
+#=======================================================================#
+#Frequenzberechnung: 
+#Drehzahl aus LinuxCNC in Prozentsatz von Maximalfrequenz am FU umrechnen
+#Prozentsatz * 100 damit keine Nachkommastellen übertragen werden müssen
+#-> Minimaldrehzahl: 2400 U/min = 40 Hz = 10% = 1000 (Prozent * 100)
+#-> Maximaldrehzahl: 24000 U/min = 400 Hz = 100% = 10000 (Prozent * 100)
+
+net axis-spindle-drz motion.spindle-speed-out-abs => mult2.fu.freq.send.in0	#<- Drehzahl aus LinuxCNC einlesen...
+setp mult2.fu.freq.send.in1 0.416667						#(Drehzahl * 0.416667) = Freq in %  	/-> 100/24000 * 100 = 0.41667 => Prozentwert der Drezahl * 100
+net spindle-speed-raw mult2.fu.freq.send.out => limit1.fu.send.freq.check.in	#-> an Min / Max Prüfung weitergeben...
+
+
+#Prüfen ob Drehzahl gültig (im Range):
+
+setp limit1.fu.send.freq.check.min 1000						#Minimale Drehzahl -> 2400 U/min (40 Hz) => 2400 * 0.416667
+setp limit1.fu.send.freq.check.max 10000					#Maximale Drehzahl -> 24000 U/min (400 Hz) => 24000 * 0.416667
+net fu-freq-send limit1.fu.send.freq.check.out => powtran.write.frequency	#-> Parameter an mb2hal.ini übergeben und an POWTRAN senden...
+
+#=======================================================================#
+#Notstop:
+#betätigt Notstop wenn FU Fehlermeldung oder LinuxCNC Notstop generiert
+
+#FU Status auf Fehler prüfen:
+
+net fu-error-state powtran.error.state.float => comp.fu.return.error.state.in0		#<- Fehler - Parameter aus mb2hal.ini kommend von POWTRAN einlesen...
+setp comp.fu.return.error.state.in1 1 							#Wenn .in0 kleiner als dierser Grenzwert, dann sind keine Fehler vorhanden! 
+
+
+#Schaltet Notstop wenn:
+#Fehlermeldung von POWTRAN kommt
+#oder Notstop in LinuxCNC Software gedrückt
+
+net axis-read-estop iocontrol.0.user-enable-out => and2.read.estop.in0			#<- Notstop aus LinuxCNC  einlesen...
+net fu-read-error-state comp.fu.return.error.state.out => and2.read.estop.in1		#<- Fehler Prüfung Modbus
+net estop-ok and2.read.estop.out => estop_latch.axis.ok-in				#Wenn einer von beiden Fehler anzeigt -> Notstop / Wenn kein Fehler -> Notstop ausschalten
+net estop-execute estop_latch.axis.ok-out => iocontrol.0.emc-enable-in			#In LinuxCNC Notstop generieren, oder wieder ausschalten			
+
+net axis-reset-estop iocontrol.0.user-request-enable => estop_latch.axis.reset		#<- Quittierung aus LinuxCNC: dann Notstop zurücksetzten
+
+#=======================================================================#
+#Ist-Drehzahl und Solldrehzahl erreicht Anzeige:
+
+#Aktuelle Frequenz vom FU einlesen und in Drehzahl umrechnen:
+
+net fu-read-actual-freq powtran.read.frequency.float => mult2.fu.freq.return.in0		#<- aktuelle Frequenz - Parameter aus mb2hal.ini kommend von POWTRAN einlesen...
+setp mult2.fu.freq.return.in1 6									#(Freq * 6) = Drehzahl 		/-> Freq wird *10 ausgegeben => Bsp.: 40.0Hz => 400 * 6 = 2400U/min
+net fu-actual-drz-range-check mult2.fu.freq.return.out => limit1.fu.return.drz.check.in		#-> an Min / Max Prüfung weitergeben...
+
+
+#Prüfen ob Drehzahl gültig (im Range):
+
+setp limit1.fu.return.drz.check.min 2400					#Minimale Drehzahl -> 2400 U/min (40 Hz)
+setp limit1.fu.return.drz.check.max 24000					#Maximale Drehzahl -> 24000 U/min
+net fu-actual-drz limit1.fu.return.drz.check.out => near.soll.drz.in2		#-> an Bereichsprüfung weitergeben... /Aktuelle Drehzahl an Custom.postgui.hal weitergeben und in LinuxCNC anzeigen...
+
+
+#Anzeige in LinuxCNC wenn Spindel Solldrehzahl erreicht hat
+
+net axis-spindle-drz near.soll.drz.in1						#<- Solldrehzahl aus LinuxCNC (wird oben bei der Frequenzberechnung eingelesen...)
+setp near.soll.drz.scale 1.01							#Toleranzbereich für Vergleich der Soll- und Ist-Drehzahl
+net spindle-at-speed near.soll.drz.out => motion.spindle-at-speed		#Wenn innerhalb Toleranz -> Spindel ist auf Solldrehzahl an Custom.postgui.hal weitergeben und in LinuxCNC anzeigen...
+
+#=======================================================================#
