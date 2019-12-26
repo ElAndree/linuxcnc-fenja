@@ -1,9 +1,6 @@
 #=======================================================================#
-#Custom Hal:								#
 #Hal Datei für: - Modbus (RS485) Kommunikation mit SOURCETRONIC FU		#
-#(Diese Datei wird bei Ausführung von stepconf überschrieben!!)		#
-#									#
-#Andre , last edit: 26.12.2019					#
+#Andre , last edit: 26.12.2019											#
 #=======================================================================#
 #=======================================================================#
 #.ini Datei laden:
@@ -38,14 +35,14 @@ addf near.soll.drz servo-thread
 #Spindel Start / Stop:
 #Parameter: Start Vorwärts (CW) / Start Rückwärts (CCW) / Stop
 
-setp mux4.fu.runmode.in0 6						# Stop (Bremsen...Stop)	-> Powtran Register: 0x0006
-setp mux4.fu.runmode.in1 2						# Start Rückwärts (CCW)	-> Powtran Register: 0x0002
-setp mux4.fu.runmode.in2 6						# Stop (Bremsen...Stop)	-> Powtran Register: 0x0006
-setp mux4.fu.runmode.in3 1						# Start Vorwärts (CW)	-> Powtran Register: 0x0001
+setp mux4.fu.runmode.in0 6						# Stop (Bremsen...Stop)	-> Sourcetronic Register: 0x0006
+setp mux4.fu.runmode.in1 2						# Start Rückwärts (CCW)	-> Sourcetronic Register: 0x0002
+setp mux4.fu.runmode.in2 6						# Stop (Bremsen...Stop)	-> Sourcetronic Register: 0x0006
+setp mux4.fu.runmode.in3 1						# Start Vorwärts (CW)	-> Sourcetronic Register: 0x0001
 
 net spindle-on motion.spindle-on => mux4.fu.runmode.sel0		#Spindel Start (Softwarebutton LinuxCNC) -> Parameter Rückwärts (CCW) laden
 net spindle-fwd motion.spindle-forward => mux4.fu.runmode.sel1		#Spindel Vorwärts (Softwarebutton LinuxCNC) -> Parameter Vorwärts (CW) laden
-net spindle-runmode mux4.fu.runmode.out => powtran.runmode.command	#-> Parameter an mb2hal.ini übergeben und an POWTRAN senden...
+net spindle-runmode mux4.fu.runmode.out => st500.runmode.command	#-> Parameter an mb2hal.ini übergeben und an Sourcetronic senden...
 
 #=======================================================================#
 #Frequenzberechnung: 
@@ -63,7 +60,7 @@ net spindle-speed-raw mult2.fu.freq.send.out => limit1.fu.send.freq.check.in	#->
 
 setp limit1.fu.send.freq.check.min 1000						#Minimale Drehzahl -> 2400 U/min (40 Hz) => 2400 * 0.416667
 setp limit1.fu.send.freq.check.max 10000					#Maximale Drehzahl -> 24000 U/min (400 Hz) => 24000 * 0.416667
-net fu-freq-send limit1.fu.send.freq.check.out => powtran.write.frequency	#-> Parameter an mb2hal.ini übergeben und an POWTRAN senden...
+net fu-freq-send limit1.fu.send.freq.check.out => st500.write.frequency	#-> Parameter an mb2hal.ini übergeben und an Sourcetronic senden...
 
 #=======================================================================#
 #Notstop:
@@ -71,12 +68,12 @@ net fu-freq-send limit1.fu.send.freq.check.out => powtran.write.frequency	#-> Pa
 
 #FU Status auf Fehler prüfen:
 
-net fu-error-state powtran.error.state.float => comp.fu.return.error.state.in0		#<- Fehler - Parameter aus mb2hal.ini kommend von POWTRAN einlesen...
+net fu-error-state st500.error.state.float => comp.fu.return.error.state.in0		#<- Fehler - Parameter aus mb2hal.ini kommend von Sourcetronic einlesen...
 setp comp.fu.return.error.state.in1 1 							#Wenn .in0 kleiner als dierser Grenzwert, dann sind keine Fehler vorhanden! 
 
 
 #Schaltet Notstop wenn:
-#Fehlermeldung von POWTRAN kommt
+#Fehlermeldung von Sourcetronic kommt
 #oder Notstop in LinuxCNC Software gedrückt
 
 net axis-read-estop iocontrol.0.user-enable-out => and2.read.estop.in0			#<- Notstop aus LinuxCNC  einlesen...
@@ -91,7 +88,7 @@ net axis-reset-estop iocontrol.0.user-request-enable => estop_latch.axis.reset		
 
 #Aktuelle Frequenz vom FU einlesen und in Drehzahl umrechnen:
 
-net fu-read-actual-freq powtran.read.frequency.float => mult2.fu.freq.return.in0		#<- aktuelle Frequenz - Parameter aus mb2hal.ini kommend von POWTRAN einlesen...
+net fu-read-actual-freq st500.read.frequency.float => mult2.fu.freq.return.in0		#<- aktuelle Frequenz - Parameter aus mb2hal.ini kommend von Sourcetronic einlesen...
 setp mult2.fu.freq.return.in1 6									#(Freq * 6) = Drehzahl 		/-> Freq wird *10 ausgegeben => Bsp.: 40.0Hz => 400 * 6 = 2400U/min
 net fu-actual-drz-range-check mult2.fu.freq.return.out => limit1.fu.return.drz.check.in		#-> an Min / Max Prüfung weitergeben...
 
