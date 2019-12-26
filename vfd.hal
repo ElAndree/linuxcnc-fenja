@@ -1,14 +1,14 @@
 #=======================================================================#
 #Custom Hal:								#
-#Hal Datei für: - Modbus (RS485) Kommunikation mit POWTRAN FU		#
+#Hal Datei für: - Modbus (RS485) Kommunikation mit SOURCETRONIC FU		#
 #(Diese Datei wird bei Ausführung von stepconf überschrieben!!)		#
 #									#
-#Michael Sutter, last edit: 10.07.2019					#
+#Andre , last edit: 26.12.2019					#
 #=======================================================================#
 #=======================================================================#
 #.ini Datei laden:
 
-loadusr -W mb2hal config=mb2hal.ini
+loadusr -Wn st500 mb2hal config=mb2hal.ini
 
 #=======================================================================#
 #Funktionen laden und initialisieren:
