@@ -13,10 +13,11 @@ loadusr -Wn st500 mb2hal config=mb2hal.ini
 loadrt mux4 names=mux4.fu.runmode						#Multiplexer 		-> Wählt 1 von 4 Zuständen aus Liste (je nach Zustand von .sel)
 loadrt mult2 names=mult2.fu.freq.send,mult2.fu.freq.return			#Multiplikation 	-> Multipliziert 2 Signale
 loadrt limit1 names=limit1.fu.send.freq.check,limit1.fu.return.drz.check	#Grenzwertüberprüfung 	-> Prüft ob Wert zwischen Max und Min-Wert
-loadrt comp names=comp.fu.return.error.state					#Komparator 		-> Prüft ob Wert grösser oder kleiner ist als Sollwert	
-loadrt and2 names=and2.read.estop						#UND Verknüpfung 	-> Prüft ob beie Eingänge 1 sind
-loadrt estop_latch names=estop_latch.axis					#Notstop 		-> Schaltet Notstop ein oder aus
+loadrt comp names=comp.fu.return.error.state,comp.fu.return.timeout.state	#Komparator 		-> Prüft ob Wert grösser oder kleiner ist als Sollwert	
+loadrt and2 names=and2.read.estop,and2.estop-vergleich					#UND Verknüpfung 	-> Prüft ob beie Eingänge 1 sind
 loadrt near names=near.soll.drz							#Bereichsprüfung 	-> Prüft ob Werte innerhalb eines bestimmten Bereichs
+loadrt conv_u32_float count=1
+loadrt not names=not.vfd
 
 #Hal Komponenten dem Servo-Thread zuweisen:
 #(Servo-thread -> für langsamere Aufgaben (reicht für Modbus))
@@ -27,9 +28,42 @@ addf mult2.fu.freq.return servo-thread
 addf limit1.fu.send.freq.check servo-thread
 addf limit1.fu.return.drz.check servo-thread
 addf comp.fu.return.error.state servo-thread
+addf comp.fu.return.timeout.state servo-thread
 addf and2.read.estop servo-thread
-addf estop_latch.axis servo-thread
 addf near.soll.drz servo-thread
+addf conv-u32-float.0 servo-thread
+addf and2.estop-vergleich servo-thread
+addf not.vfd servo-thread
+
+#*******************
+#  SPINDLE S
+#*******************
+
+setp   pid.s.Pgain     [SPINDLE_9]P
+setp   pid.s.Igain     [SPINDLE_9]I
+setp   pid.s.Dgain     [SPINDLE_9]D
+setp   pid.s.bias      [SPINDLE_9]BIAS
+setp   pid.s.FF0       [SPINDLE_9]FF0
+setp   pid.s.FF1       [SPINDLE_9]FF1
+setp   pid.s.FF2       [SPINDLE_9]FF2
+setp   pid.s.deadband  [SPINDLE_9]DEADBAND
+setp   pid.s.maxoutput [SPINDLE_9]MAX_OUTPUT
+setp   pid.s.error-previous-target true
+
+net spindle-index-enable  <=> pid.s.index-enable
+net spindle-enable        =>  pid.s.enable
+net spindle-vel-cmd-rpm     => pid.s.command
+net spindle-vel-fb-rpm      => pid.s.feedback
+net spindle-output        <=  pid.s.output
+
+# ---setup spindle control signals---
+
+net spindle-vel-cmd-rps        <=  spindle.0.speed-out-rps
+net spindle-vel-cmd-rps-abs    <=  spindle.0.speed-out-rps-abs
+net spindle-vel-cmd-rpm        <=  spindle.0.speed-out
+net spindle-revs               =>  spindle.0.revs
+net spindle-vel-fb-rps         =>  spindle.0.speed-in
+net spindle-index-enable      <=>  spindle.0.index-enable
 
 #=======================================================================#
 #Spindel Start / Stop:
@@ -40,8 +74,10 @@ setp mux4.fu.runmode.in1 2						# Start Rückwärts (CCW)	-> Sourcetronic Regist
 setp mux4.fu.runmode.in2 6						# Stop (Bremsen...Stop)	-> Sourcetronic Register: 0x0006
 setp mux4.fu.runmode.in3 1						# Start Vorwärts (CW)	-> Sourcetronic Register: 0x0001
 
-net spindle-on motion.spindle-on => mux4.fu.runmode.sel0		#Spindel Start (Softwarebutton LinuxCNC) -> Parameter Rückwärts (CCW) laden
-net spindle-fwd motion.spindle-forward => mux4.fu.runmode.sel1		#Spindel Vorwärts (Softwarebutton LinuxCNC) -> Parameter Vorwärts (CW) laden
+net spindle-enable spindle.0.on => mux4.fu.runmode.sel0		#Spindel Stop (Softwarebutton LinuxCNC) -> Parameter Bremsen laden
+net spindle-cw spindle.0.forward => mux4.fu.runmode.sel1		#Spindel Vorwärts (Softwarebutton LinuxCNC) -> Parameter Vorwärts (CW) laden
+net spindle-ccw <= spindle.0.reverse
+net spindle-brake <= spindle.0.brake
 net spindle-runmode mux4.fu.runmode.out => st500.runmode.command	#-> Parameter an mb2hal.ini übergeben und an Sourcetronic senden...
 
 #=======================================================================#
@@ -51,16 +87,17 @@ net spindle-runmode mux4.fu.runmode.out => st500.runmode.command	#-> Parameter a
 #-> Minimaldrehzahl: 2400 U/min = 40 Hz = 10% = 1000 (Prozent * 100)
 #-> Maximaldrehzahl: 24000 U/min = 400 Hz = 100% = 10000 (Prozent * 100)
 
-net axis-spindle-drz motion.spindle-speed-out-abs => mult2.fu.freq.send.in0	#<- Drehzahl aus LinuxCNC einlesen...
-setp mult2.fu.freq.send.in1 0.416667						#(Drehzahl * 0.416667) = Freq in %  	/-> 100/24000 * 100 = 0.41667 => Prozentwert der Drezahl * 100
+net spindle-vel-cmd-rpm-abs spindle.0.speed-out-abs => mult2.fu.freq.send.in0	#<- Drehzahl aus LinuxCNC einlesen...
+setp mult2.fu.freq.send.in1 0.167						#(Drehzahl * 0.416667) = Freq in %  	/-> 100/24000 * 100 = 0.41667 => Prozentwert der Drezahl * 100
 net spindle-speed-raw mult2.fu.freq.send.out => limit1.fu.send.freq.check.in	#-> an Min / Max Prüfung weitergeben...
 
 
 #Prüfen ob Drehzahl gültig (im Range):
 
-setp limit1.fu.send.freq.check.min 1000						#Minimale Drehzahl -> 2400 U/min (40 Hz) => 2400 * 0.416667
-setp limit1.fu.send.freq.check.max 10000					#Maximale Drehzahl -> 24000 U/min (400 Hz) => 24000 * 0.416667
+setp limit1.fu.send.freq.check.min 400					#Minimale Drehzahl -> 2400 U/min (40 Hz) => 2400 * 0.416667
+setp limit1.fu.send.freq.check.max 4000					#Maximale Drehzahl -> 24000 U/min (400 Hz) => 24000 * 0.416667
 net fu-freq-send limit1.fu.send.freq.check.out => st500.write.frequency	#-> Parameter an mb2hal.ini übergeben und an Sourcetronic senden...
+
 
 #=======================================================================#
 #Notstop:
@@ -68,20 +105,22 @@ net fu-freq-send limit1.fu.send.freq.check.out => st500.write.frequency	#-> Para
 
 #FU Status auf Fehler prüfen:
 
+net fu-convert st500.error.num_errors => conv-u32-float.0.in
+
 net fu-error-state st500.error.state.float => comp.fu.return.error.state.in0		#<- Fehler - Parameter aus mb2hal.ini kommend von Sourcetronic einlesen...
 setp comp.fu.return.error.state.in1 1 							#Wenn .in0 kleiner als dierser Grenzwert, dann sind keine Fehler vorhanden! 
 
+net fu-timeout-state conv-u32-float.0.out => comp.fu.return.timeout.state.in0
+setp comp.fu.return.timeout.state.in1 10
+
+net estop-vergleich1 comp.fu.return.error.state.out => and2.estop-vergleich.in0
+net estop-vergleich2 comp.fu.return.timeout.state.out => and2.estop-vergleich.in1
 
 #Schaltet Notstop wenn:
 #Fehlermeldung von Sourcetronic kommt
-#oder Notstop in LinuxCNC Software gedrückt
 
-net axis-read-estop iocontrol.0.user-enable-out => and2.read.estop.in0			#<- Notstop aus LinuxCNC  einlesen...
-net fu-read-error-state comp.fu.return.error.state.out => and2.read.estop.in1		#<- Fehler Prüfung Modbus
-net estop-ok and2.read.estop.out => estop_latch.axis.ok-in				#Wenn einer von beiden Fehler anzeigt -> Notstop / Wenn kein Fehler -> Notstop ausschalten
-net estop-execute estop_latch.axis.ok-out => iocontrol.0.emc-enable-in			#In LinuxCNC Notstop generieren, oder wieder ausschalten			
-
-net axis-reset-estop iocontrol.0.user-request-enable => estop_latch.axis.reset		#<- Quittierung aus LinuxCNC: dann Notstop zurücksetzten
+net estop-vfd-error-neg not.vfd.in <= and2.estop-vergleich.out
+net estop-vfd-error <= not.vfd.out
 
 #=======================================================================#
 #Ist-Drehzahl und Solldrehzahl erreicht Anzeige:
@@ -104,6 +143,6 @@ net fu-actual-drz limit1.fu.return.drz.check.out => near.soll.drz.in2		#-> an Be
 
 net axis-spindle-drz near.soll.drz.in1						#<- Solldrehzahl aus LinuxCNC (wird oben bei der Frequenzberechnung eingelesen...)
 setp near.soll.drz.scale 1.01							#Toleranzbereich für Vergleich der Soll- und Ist-Drehzahl
-net spindle-at-speed near.soll.drz.out => motion.spindle-at-speed		#Wenn innerhalb Toleranz -> Spindel ist auf Solldrehzahl an Custom.postgui.hal weitergeben und in LinuxCNC anzeigen...
+net spindle-at-speed-fu near.soll.drz.out => spindle.0.at-speed  		#Wenn innerhalb Toleranz -> Spindel ist auf Solldrehzahl an Custom.postgui.hal weitergeben und in LinuxCNC anzeigen...
 
 #=======================================================================#

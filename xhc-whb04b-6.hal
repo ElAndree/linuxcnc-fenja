@@ -2,27 +2,6 @@
 # WHB04B-6 jog dial configuration
 # ######################################################################
 
-# BEGIN Note: spindle signals are ususally listed in the main .hal file
-#
-#net  spindle.is-on                      motion.spindle-on
-#net  spindle.start                      halui.spindle.start         
-#net  spindle.stop                       halui.spindle.stop
-#net  spindle.forward                    halui.spindle.forward
-#
-#net  spindle.reverse                    halui.spindle.reverse
-#net  spindle.runs-forward               motion.spindle-forward     
-#net  spindle.runs-reverse               motion.spindle-reverse
-#
-#net  spindle.increase                   halui.spindle.increase
-#net  spindle.decrease                   halui.spindle.decrease
-#net  spindle.spindle-override.value     halui.spindle-override.value
-#net  spindle.spindle-override.increase  halui.spindle-override.increase
-#net  spindle.spindle-override.decrease  halui.spindle-override.decrease
-#
-#net  spindle.velocity.abs-rpm           motion.spindle-speed-out-abs
-#
-# END Note
-
 # ######################################################################
 # Load components
 # ######################################################################
