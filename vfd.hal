@@ -88,14 +88,14 @@ net spindle-runmode mux4.fu.runmode.out => st500.runmode.command	#-> Parameter a
 #-> Maximaldrehzahl: 24000 U/min = 400 Hz = 100% = 10000 (Prozent * 100)
 
 net spindle-vel-cmd-rpm-abs spindle.0.speed-out-abs => mult2.fu.freq.send.in0	#<- Drehzahl aus LinuxCNC einlesen...
-setp mult2.fu.freq.send.in1 0.167						#(Drehzahl * 0.416667) = Freq in %  	/-> 100/24000 * 100 = 0.41667 => Prozentwert der Drezahl * 100
+setp mult2.fu.freq.send.in1 0.41667						#(Drehzahl * 0.416667) = Freq in %  	/-> 100/24000 * 100 = 0.41667 => Prozentwert der Drezahl * 100
 net spindle-speed-raw mult2.fu.freq.send.out => limit1.fu.send.freq.check.in	#-> an Min / Max Prüfung weitergeben...
 
 
 #Prüfen ob Drehzahl gültig (im Range):
 
-setp limit1.fu.send.freq.check.min 400					#Minimale Drehzahl -> 2400 U/min (40 Hz) => 2400 * 0.416667
-setp limit1.fu.send.freq.check.max 4000					#Maximale Drehzahl -> 24000 U/min (400 Hz) => 24000 * 0.416667
+setp limit1.fu.send.freq.check.min 1000					#Minimale Drehzahl -> 2400 U/min (40 Hz) => 2400 * 0.416667
+setp limit1.fu.send.freq.check.max 10000					#Maximale Drehzahl -> 24000 U/min (400 Hz) => 24000 * 0.416667
 net fu-freq-send limit1.fu.send.freq.check.out => st500.write.frequency	#-> Parameter an mb2hal.ini übergeben und an Sourcetronic senden...
 
 
@@ -134,14 +134,14 @@ net fu-actual-drz-range-check mult2.fu.freq.return.out => limit1.fu.return.drz.c
 
 #Prüfen ob Drehzahl gültig (im Range):
 
-setp limit1.fu.return.drz.check.min 2400					#Minimale Drehzahl -> 2400 U/min (40 Hz)
+setp limit1.fu.return.drz.check.min 0					#Minimale Drehzahl -> 2400 U/min (40 Hz)
 setp limit1.fu.return.drz.check.max 24000					#Maximale Drehzahl -> 24000 U/min
 net fu-actual-drz limit1.fu.return.drz.check.out => near.soll.drz.in2		#-> an Bereichsprüfung weitergeben... /Aktuelle Drehzahl an Custom.postgui.hal weitergeben und in LinuxCNC anzeigen...
 
 
 #Anzeige in LinuxCNC wenn Spindel Solldrehzahl erreicht hat
 
-net axis-spindle-drz near.soll.drz.in1						#<- Solldrehzahl aus LinuxCNC (wird oben bei der Frequenzberechnung eingelesen...)
+net spindle-vel-cmd-rpm-abs => near.soll.drz.in1						#<- Solldrehzahl aus LinuxCNC (wird oben bei der Frequenzberechnung eingelesen...)
 setp near.soll.drz.scale 1.01							#Toleranzbereich für Vergleich der Soll- und Ist-Drehzahl
 net spindle-at-speed-fu near.soll.drz.out => spindle.0.at-speed  		#Wenn innerhalb Toleranz -> Spindel ist auf Solldrehzahl an Custom.postgui.hal weitergeben und in LinuxCNC anzeigen...
 
