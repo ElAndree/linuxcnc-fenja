@@ -4,29 +4,11 @@
 ####
 # Setup buttons
 ####
-loadrt buttonrow names=br_water,br_dustseal
-addf br_water servo-thread
-addf br_dustseal servo-thread
-
-# button row water cooling
-net br_water_io_auto      br_water.io-auto  <= status_tab.lb_water_auto-button
-net br_water_io_auto_led  br_water.led-auto => status_tab.lb_water_auto-light
-net br_water_io_off      br_water.io-off  <= status_tab.lb_water_off-button
-net br_water_io_off_led  br_water.led-off => status_tab.lb_water_off-light
-net br_water_io_on      br_water.io-on  <= status_tab.lb_water_on-button
-net br_water_io_on_led  br_water.led-on => status_tab.lb_water_on-light
-net spindle-enable	    br_water.val-auto 
-net cooling_enable      br_water.out	
-
-# button row dust seal air
-net br_dustseal_io_auto      br_dustseal.io-auto  <= status_tab.lb_dustseal_auto-button
-net br_dustseal_io_auto_led  br_dustseal.led-auto => status_tab.lb_dustseal_auto-light
-net br_dustseal_io_off      br_dustseal.io-off  <= status_tab.lb_dustseal_off-button
-net br_dustseal_io_off_led  br_dustseal.led-off => status_tab.lb_dustseal_off-light
-net br_dustseal_io_on      br_dustseal.io-on  <= status_tab.lb_dustseal_on-button
-net br_dustseal_io_on_led  br_dustseal.led-on => status_tab.lb_dustseal_on-light
-net spindle-enable	    br_dustseal.val-auto 
-net dustsealair_enable      br_dustseal.out
+loadrt buttonrow names=br_spindel,br_dust,br_rotation,br_mms
+addf br_spindel servo-thread
+addf br_dust servo-thread
+addf br_rotation servo-thread
+addf br_mms servo-thread
 
 
 #4. Wenn man das Modul sperren möchte (so wie ich die Ventile vom ATC wenn die Spindel dreht :huh: ), geht das über den disable-Eingang. Der setzt out hart auf 0.
