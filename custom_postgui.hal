@@ -9,4 +9,6 @@
 unlinkp iocontrol.0.tool-change
 unlinkp iocontrol.0.tool-changed
 
+net pause-knopf gmoccapy.h-button.button-4 <= hm2_7i76e.0.7i76.0.0.input-14
+
 net tool-prep-loop         iocontrol.0.tool-prepare      <=   iocontrol.0.tool-prepared

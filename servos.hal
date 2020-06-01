@@ -84,3 +84,16 @@ net both-home-z     <=  hm2_7i76e.0.7i76.0.0.input-10
 net both-home-z     =>  joint.2.home-sw-in
 net both-home-z     =>  joint.2.neg-lim-sw-in
 net both-home-z     =>  joint.2.pos-lim-sw-in
+
+
+# Schmierung Treiber
+
+setp   hm2_7i76e.0.stepgen.00.dirsetup        [MMS]DIRSETUP
+setp   hm2_7i76e.0.stepgen.00.dirhold         [MMS]DIRHOLD
+setp   hm2_7i76e.0.stepgen.00.steplen         [MMS]STEPLEN
+setp   hm2_7i76e.0.stepgen.00.stepspace       [MMS]STEPSPACE
+setp   hm2_7i76e.0.stepgen.00.position-scale  [MMS]STEP_SCALE
+setp   hm2_7i76e.0.stepgen.00.step_type        0
+setp   hm2_7i76e.0.stepgen.00.control-type     1
+setp   hm2_7i76e.0.stepgen.00.maxaccel         [MMS]STEPGEN_MAXACCEL
+setp   hm2_7i76e.0.stepgen.00.maxvel           [MMS]STEPGEN_MAXVEL
