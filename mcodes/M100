@@ -2,4 +2,6 @@
 halcmd setp absaugung-raw False
 halcmd setp luft-raw False
 halcmd setp schmierung-raw False
+halcmd setp treiber-raw False
+halcmd setp flush-mcode False
 exit 0

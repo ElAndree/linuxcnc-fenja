@@ -5,8 +5,8 @@ loadrt hm2_eth board_ip="10.10.10.10" config=" num_encoders=0 num_pwmgens=0 num_
 setp    hm2_7i76e.0.watchdog.timeout_ns 5000000
 
 loadrt pid names=pid.s
-loadrt and2 names=and2.absaugung,and2.relais-luft,and2.relais-schmierung
-loadrt or2 names=or2.estop-ext,or2.estop,or2.1
+loadrt and2 names=and2.absaugung,and2.relais-luft,and2.relais-schmierung,and2.treiber
+loadrt or2 names=or2.estop-ext,or2.estop,or2.1,or2.flush
 loadrt not names=not.esignal
 loadrt lut5 names=lut5.servo,lut5.estop
 loadrt estop_latch count=1
@@ -20,6 +20,7 @@ addf hm2_7i76e.0.write         servo-thread
 addf and2.absaugung servo-thread
 addf and2.relais-luft servo-thread
 addf and2.relais-schmierung servo-thread
+addf and2.treiber servo-thread
 
 addf or2.estop servo-thread
 addf or2.estop-ext servo-thread
@@ -66,6 +67,18 @@ net luft-schalten and2.relais-luft.out hm2_7i76e.0.7i76.0.0.output-00
 net schmierung-raw and2.relais-schmierung.in0
 net schmierung-running halui.program.is-running and2.relais-schmierung.in1
 net schmierung-schalten and2.relais-schmierung.out hm2_7i76e.0.7i76.0.0.output-15
+
+# Treiber Enable
+
+net treiber-raw and2.treiber.in0
+net treiber-running halui.program.is-running and2.treiber.in1
+net treiber-schalten and2.treiber.out hm2_7i76e.0.stepgen.00.enable
+
+# Flush Mode
+
+net flush-mcode or2.flush.in0
+net flush-knopf hm2_7i76e.0.7i76.0.0.input-22 or2.flush.in1
+net flush-mode or2.flush.out
 
 # Servo Endstufenfehler
 net servo-1 hm2_7i76e.0.7i76.0.0.input-07 => lut5.servo.in-0
