@@ -3,8 +3,9 @@ loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[KINS]JO
 loadrt hostmot2
 loadrt hm2_eth board_ip="10.10.10.10" config=" num_encoders=0 num_pwmgens=0 num_stepgens=5 sserial_port_0=00xxxx" 
 setp    hm2_7i76e.0.watchdog.timeout_ns 5000000
+
 loadrt pid names=pid.s
-loadrt and2 names=and2.absaugung
+loadrt and2 names=and2.absaugung,and2.relais-luft,and2.relais-schmierung
 loadrt or2 names=or2.estop-ext,or2.estop,or2.1
 loadrt not names=not.esignal
 loadrt lut5 names=lut5.servo,lut5.estop
@@ -17,11 +18,16 @@ addf pid.s.do-pid-calcs       servo-thread
 addf hm2_7i76e.0.write         servo-thread
 
 addf and2.absaugung servo-thread
+addf and2.relais-luft servo-thread
+addf and2.relais-schmierung servo-thread
+
 addf or2.estop servo-thread
 addf or2.estop-ext servo-thread
+
 addf not.esignal servo-thread
 addf lut5.servo servo-thread
 addf lut5.estop servo-thread
+
 addf estop-latch.0 servo-thread
 
 setp hm2_7i76e.0.dpll.01.timer-us -50
@@ -43,12 +49,23 @@ net estop-ext-1 or2.estop-ext.in0 <= hm2_7i76e.0.7i76.0.0.input-13-not
 net estop-ext-2 or2.estop-ext.in1 <= hm2_7i76e.0.7i76.0.0.input-15-not
 net toolsensor-error hm2_7i76e.0.7i76.0.0.input-08-not => lut5.estop.in-3
 
-# Minimalmengenschmierung
-net coolant-mist      <=  iocontrol.0.coolant-mist
-net coolant-mist => hm2_7i76e.0.7i76.0.0.output-00
-
-
 # Absaugung PIN: hm2_7i76e.0.7i76.0.0.output-01
+
+net absaugung-raw and2.absaugung.in0
+net absaugung-running halui.program.is-running and2.absaugung.in1
+net absaugung-schalten and2.absaugung.out hm2_7i76e.0.7i76.0.0.output-01
+
+# Luftrelais PIN hm2_7i76e.0.7i76.0.0.output-00
+
+net luft-raw and2.relais-luft.in0
+net luft-running halui.program.is-running and2.relais-luft.in1
+net luft-schalten and2.relais-luft.out hm2_7i76e.0.7i76.0.0.output-00
+
+# Schmierungsrelais PIN hm2_7i76e.0.7i76.0.0.output-00
+
+net schmierung-raw and2.relais-schmierung.in0
+net schmierung-running halui.program.is-running and2.relais-schmierung.in1
+net schmierung-schalten and2.relais-schmierung.out hm2_7i76e.0.7i76.0.0.output-15
 
 # Servo Endstufenfehler
 net servo-1 hm2_7i76e.0.7i76.0.0.input-07 => lut5.servo.in-0

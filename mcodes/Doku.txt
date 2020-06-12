@@ -1,0 +1,5 @@
+M100 = Schmierung & Absaugung abschalten
+M101 = Schmierung mit Schmiermittel, normaler Modus
+M102 = Schmierung mit Schmiermittel, Fast Forward Modus
+M103 = Schmierung mit Luft
+M104 = Absaugung

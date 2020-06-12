@@ -1,0 +1,5 @@
+#!/bin/bash
+halcmd setp absaugung-raw False
+halcmd setp luft-raw False
+halcmd setp schmierung-raw False
+exit 0

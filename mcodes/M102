@@ -1,0 +1,4 @@
+#!/bin/bash
+halcmd setp luft-raw True
+halcmd setp schmierung-raw True
+exit 0

@@ -1,0 +1,3 @@
+#!/bin/bash
+halcmd setp luft-raw True
+exit 0
