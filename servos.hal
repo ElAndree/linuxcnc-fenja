@@ -1,3 +1,12 @@
+loadrt message names=m_servox,m_servoy,m_servoz messages="Servo X Alarm,Servo Y Alarm,Servo Z Alarm"
+addf m_servox servo-thread
+addf m_servoy servo-thread
+addf m_servoz servo-thread
+
+net servo-1 => m_servox.trigger
+net servo-2 => m_servoy.trigger
+net servo-3 => m_servoz.trigger
+
 #*******************
 #  AXIS X JOINT 0
 #*******************

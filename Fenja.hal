@@ -47,11 +47,8 @@ net toolsensor-error hm2_7i76e.0.7i76.0.0.input-08-not => lut5.estop.in-3
 net coolant-mist      <=  iocontrol.0.coolant-mist
 net coolant-mist => hm2_7i76e.0.7i76.0.0.output-00
 
-# Absaugung
-net absaugung-bedingung-1 <= halui.program.is-running
-net absaugung-bedingung-1 => and2.absaugung.in0
-net absaugung-bedingung-2 halui.mode.is-auto => and2.absaugung.in1
-net absaugung-schalten hm2_7i76e.0.7i76.0.0.output-01 <= and2.absaugung.out
+
+# Absaugung PIN: hm2_7i76e.0.7i76.0.0.output-01
 
 # Servo Endstufenfehler
 net servo-1 hm2_7i76e.0.7i76.0.0.input-07 => lut5.servo.in-0
