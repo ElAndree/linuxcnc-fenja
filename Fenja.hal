@@ -50,35 +50,37 @@ net estop-ext-1 or2.estop-ext.in0 <= hm2_7i76e.0.7i76.0.0.input-13-not
 net estop-ext-2 or2.estop-ext.in1 <= hm2_7i76e.0.7i76.0.0.input-15-not
 net toolsensor-error hm2_7i76e.0.7i76.0.0.input-08-not => lut5.estop.in-3
 
+net program-running halui.program.is-running
+
 # Absaugung PIN: hm2_7i76e.0.7i76.0.0.output-01
 
 net absaugung-raw and2.absaugung.in0
-net absaugung-running halui.program.is-running and2.absaugung.in1
-net absaugung-schalten and2.absaugung.out hm2_7i76e.0.7i76.0.0.output-01
+net program-running and2.absaugung.in1
+net absaugung-schalten and2.absaugung.out
 
 # Luftrelais PIN hm2_7i76e.0.7i76.0.0.output-00
 
 net luft-raw and2.relais-luft.in0
-net luft-running halui.program.is-running and2.relais-luft.in1
-net luft-schalten and2.relais-luft.out hm2_7i76e.0.7i76.0.0.output-00
+net program-running and2.relais-luft.in1
+net luft-schalten and2.relais-luft.out
 
-# Schmierungsrelais PIN hm2_7i76e.0.7i76.0.0.output-00
+# Schmierungsrelais PIN hm2_7i76e.0.7i76.0.0.output-15
 
 net schmierung-raw and2.relais-schmierung.in0
-net schmierung-running halui.program.is-running and2.relais-schmierung.in1
-net schmierung-schalten and2.relais-schmierung.out hm2_7i76e.0.7i76.0.0.output-15
+net program-running and2.relais-schmierung.in1
+net schmierung-schalten and2.relais-schmierung.out
 
 # Treiber Enable
 
 net treiber-raw and2.treiber.in0
-net treiber-running halui.program.is-running and2.treiber.in1
+net program-running and2.treiber.in1
 net treiber-schalten and2.treiber.out hm2_7i76e.0.stepgen.00.enable
 
 # Flush Mode
 
 net flush-mcode or2.flush.in0
 net flush-knopf hm2_7i76e.0.7i76.0.0.input-22 or2.flush.in1
-net flush-mode or2.flush.out
+net flush-schalten or2.flush.out
 
 # Servo Endstufenfehler
 net servo-1 hm2_7i76e.0.7i76.0.0.input-07 => lut5.servo.in-0

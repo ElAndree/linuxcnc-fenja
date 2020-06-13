@@ -92,17 +92,8 @@
           <object class="GtkTable" id="table2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="n_rows">7</property>
+            <property name="n_rows">10</property>
             <property name="n_columns">3</property>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
             <child>
               <placeholder/>
             </child>
@@ -196,39 +187,6 @@
               <placeholder/>
             </child>
             <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
               <object class="HAL_Label" id="hal_label12">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -295,7 +253,8 @@
               <object class="HAL_Label" id="hal_label11">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Schmierung</property>
+                <property name="xalign">0.47999998927116394</property>
+                <property name="label" translatable="yes">Druckluft</property>
                 <property name="text_template"/>
               </object>
               <packing>
@@ -306,7 +265,7 @@
               </packing>
             </child>
             <child>
-              <object class="HAL_LED" id="led_mms">
+              <object class="HAL_LED" id="led_druckluft">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="led_blink_rate">0</property>
@@ -317,7 +276,7 @@
               </packing>
             </child>
             <child>
-              <object class="HAL_LED" id="led_toolinspindle1">
+              <object class="HAL_LED" id="led_rs485">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="led_blink_rate">0</property>
@@ -442,7 +401,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="HAL_LightButton" id="lb_rotation_righ">
+                  <object class="HAL_LightButton" id="lb_rotation_auto">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="border_width">3</property>
@@ -546,7 +505,7 @@
                 <property name="can_focus">False</property>
                 <property name="homogeneous">True</property>
                 <child>
-                  <object class="HAL_LightButton" id="lb_mms_off">
+                  <object class="HAL_LightButton" id="lb_druckluft_off">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="border_width">3</property>
@@ -565,7 +524,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="HAL_LightButton" id="lb_mms_on">
+                  <object class="HAL_LightButton" id="lb_druckluft_on">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="border_width">3</property>
@@ -584,7 +543,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="HAL_LightButton" id="lb_mms_auto">
+                  <object class="HAL_LightButton" id="lb_druckluft_auto">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="border_width">3</property>
@@ -650,11 +609,14 @@
               <placeholder/>
             </child>
             <child>
+              <placeholder/>
+            </child>
+            <child>
               <object class="HAL_Label" id="text_drehzahl_manuel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="justify">center</property>
-                <property name="text_template">%5d</property>
+                <property name="text_template">%5d 1/min</property>
               </object>
               <packing>
                 <property name="top_attach">4</property>
@@ -663,6 +625,244 @@
             </child>
             <child>
               <placeholder/>
+            </child>
+            <child>
+              <object class="HAL_Label" id="hal_label5">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0.4699999988079071</property>
+                <property name="yalign">0.49000000953674316</property>
+                <property name="label" translatable="yes">Schmierung</property>
+                <property name="text_template"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">7</property>
+                <property name="bottom_attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_Label" id="hal_label6">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0.47999998927116394</property>
+                <property name="label" translatable="yes">Flush-Mode</property>
+                <property name="text_template"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">8</property>
+                <property name="bottom_attach">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_Label" id="hal_label7">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0.51999998092651367</property>
+                <property name="label" translatable="yes">Fördermenge</property>
+                <property name="text_template"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">9</property>
+                <property name="bottom_attach">10</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="hbox1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="homogeneous">True</property>
+                <child>
+                  <object class="HAL_LightButton" id="lb_schmierung_off">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="border_width">3</property>
+                    <property name="button_on_text" translatable="yes">Aus</property>
+                    <property name="button_text" translatable="yes">Aus</property>
+                    <property name="corner_radius">1</property>
+                    <property name="font_off_color">#000000000000</property>
+                    <property name="font_on_color">#000000000000</property>
+                    <property name="light_off_color">#e6e6e6e6e6e6</property>
+                    <property name="light_on_color">#cb7800000000</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="HAL_LightButton" id="lb_schmierung_on">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="border_width">3</property>
+                    <property name="button_on_text" translatable="yes">An</property>
+                    <property name="button_text" translatable="yes">An</property>
+                    <property name="corner_radius">1</property>
+                    <property name="font_off_color">#000000000000</property>
+                    <property name="font_on_color">#000000000000</property>
+                    <property name="light_off_color">#e6e6e6e6e6e6</property>
+                    <property name="light_on_color">#0000cbcb0000</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="HAL_LightButton" id="lb_schmierung_auto">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="border_width">3</property>
+                    <property name="button_on_text" translatable="yes">Auto</property>
+                    <property name="button_text" translatable="yes">Auto</property>
+                    <property name="corner_radius">1</property>
+                    <property name="font_off_color">#000000000000</property>
+                    <property name="font_on_color">#000000000000</property>
+                    <property name="light_is_on">True</property>
+                    <property name="light_off_color">#e666e666e666</property>
+                    <property name="light_on_color">#ffffe4a40c35</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">7</property>
+                <property name="bottom_attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="hbox3">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="homogeneous">True</property>
+                <child>
+                  <object class="HAL_LightButton" id="lb_flush_off">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="border_width">3</property>
+                    <property name="button_on_text" translatable="yes">Aus</property>
+                    <property name="button_text" translatable="yes">Aus</property>
+                    <property name="corner_radius">1</property>
+                    <property name="font_off_color">#000000000000</property>
+                    <property name="font_on_color">#000000000000</property>
+                    <property name="light_off_color">#e6e6e6e6e6e6</property>
+                    <property name="light_on_color">#cb7800000000</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="HAL_LightButton" id="lb_flush_on">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="border_width">3</property>
+                    <property name="button_on_text" translatable="yes">An</property>
+                    <property name="button_text" translatable="yes">An</property>
+                    <property name="corner_radius">1</property>
+                    <property name="font_off_color">#000000000000</property>
+                    <property name="font_on_color">#000000000000</property>
+                    <property name="light_off_color">#e6e6e6e6e6e6</property>
+                    <property name="light_on_color">#0000cbcb0000</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="HAL_LightButton" id="lb_flush_auto">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="border_width">3</property>
+                    <property name="button_on_text" translatable="yes">Auto</property>
+                    <property name="button_text" translatable="yes">Auto</property>
+                    <property name="corner_radius">1</property>
+                    <property name="font_off_color">#000000000000</property>
+                    <property name="font_on_color">#000000000000</property>
+                    <property name="light_is_on">True</property>
+                    <property name="light_off_color">#e666e666e666</property>
+                    <property name="light_on_color">#ffffe4a40c35</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">8</property>
+                <property name="bottom_attach">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_LED" id="led_schmierung">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="led_blink_rate">0</property>
+              </object>
+              <packing>
+                <property name="top_attach">7</property>
+                <property name="bottom_attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_LED" id="led_flush">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="led_blink_rate">0</property>
+              </object>
+              <packing>
+                <property name="top_attach">8</property>
+                <property name="bottom_attach">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_HScale" id="schmierung_eingabe">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="fill_level">24000</property>
+                <property name="digits">0</property>
+                <property name="draw_value">False</property>
+                <property name="value_pos">left</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">9</property>
+                <property name="bottom_attach">10</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_Label" id="text_schmierung">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="justify">center</property>
+                <property name="text_template">%4d ml/min</property>
+              </object>
+              <packing>
+                <property name="top_attach">9</property>
+                <property name="bottom_attach">10</property>
+              </packing>
             </child>
           </object>
           <packing>

@@ -4,12 +4,60 @@
 ####
 # Setup buttons
 ####
-loadrt buttonrow names=br_spindel,br_dust,br_rotation,br_mms
+loadrt buttonrow names=br_spindel,br_dust,br_rotation,br_druckluft,br_flush,br_schmierung
 addf br_spindel servo-thread
 addf br_dust servo-thread
 addf br_rotation servo-thread
-addf br_mms servo-thread
+addf br_druckluft servo-thread
+addf br_flush servo-thread
+addf br_schmierung servo-thread	
 
+net br_dust_io_auto      br_dust.io-auto  <= status_tab.lb_dust_auto-button
+net br_dust_io_auto_led  br_dust.led-auto => status_tab.lb_dust_auto-light
+net br_dust_io_off      br_dust.io-off  <= status_tab.lb_dust_off-button
+net br_dust_io_off_led  br_dust.led-off => status_tab.lb_dust_off-light
+net br_dust_io_on      br_dust.io-on  <= status_tab.lb_dust_on-button
+net br_dust_io_on_led  br_dust.led-on => status_tab.lb_dust_on-light
 
-#4. Wenn man das Modul sperren möchte (so wie ich die Ventile vom ATC wenn die Spindel dreht :huh: ), geht das über den disable-Eingang. Der setzt out hart auf 0.
-# net spindle-running br_lock.disable
+net absaugung-schalten br_dust.val-auto 
+net dust-enable br_dust.out
+net dust-enable hm2_7i76e.0.7i76.0.0.output-01
+net dust-enable status_tab.led_dust
+
+net br_druckluft_io_auto      br_druckluft.io-auto  <= status_tab.lb_druckluft_auto-button
+net br_druckluft_io_auto_led  br_druckluft.led-auto => status_tab.lb_druckluft_auto-light
+net br_druckluft_io_off      br_druckluft.io-off  <= status_tab.lb_druckluft_off-button
+net br_druckluft_io_off_led  br_druckluft.led-off => status_tab.lb_druckluft_off-light
+net br_druckluft_io_on      br_druckluft.io-on  <= status_tab.lb_druckluft_on-button
+net br_druckluft_io_on_led  br_druckluft.led-on => status_tab.lb_druckluft_on-light
+
+net luft-schalten br_druckluft.val-auto 
+net druckluft-enable br_druckluft.out
+net druckluft-enable hm2_7i76e.0.7i76.0.0.output-00
+net druckluft-enable status_tab.led_druckluft
+
+net br_schmierung_io_auto      br_schmierung.io-auto  <= status_tab.lb_schmierung_auto-button
+net br_schmierung_io_auto_led  br_schmierung.led-auto => status_tab.lb_schmierung_auto-light
+net br_schmierung_io_off      br_schmierung.io-off  <= status_tab.lb_schmierung_off-button
+net br_schmierung_io_off_led  br_schmierung.led-off => status_tab.lb_schmierung_off-light
+net br_schmierung_io_on      br_schmierung.io-on  <= status_tab.lb_schmierung_on-button
+net br_schmierung_io_on_led  br_schmierung.led-on => status_tab.lb_schmierung_on-light
+
+net schmierung-schalten br_schmierung.val-auto 
+net schmierung-enable br_schmierung.out
+net schmierung-enable hm2_7i76e.0.7i76.0.0.output-15
+net schmierung-enable status_tab.led_schmierung
+
+net br_flush_io_auto      br_flush.io-auto  <= status_tab.lb_flush_auto-button
+net br_flush_io_auto_led  br_flush.led-auto => status_tab.lb_flush_auto-light
+net br_flush_io_off      br_flush.io-off  <= status_tab.lb_flush_off-button
+net br_flush_io_off_led  br_flush.led-off => status_tab.lb_flush_off-light
+net br_flush_io_on      br_flush.io-on  <= status_tab.lb_flush_on-button
+net br_flush_io_on_led  br_flush.led-on => status_tab.lb_flush_on-light
+
+net flush-schalten br_flush.val-auto 
+net flush-enable br_flush.out
+
+net flush-enable status_tab.led_flush
+
+net fu-actual-drz status_tab.meter_rpm
