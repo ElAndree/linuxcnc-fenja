@@ -1,0 +1,74 @@
+.TH PARAMSAVER "9" "2013-05-19" "LinuxCNC Documentation" "HAL Component"
+.de TQ
+.br
+.ns
+.TP \\$1
+..
+
+.SH NAME
+
+paramsaver \- This component saves and restores parameters to file
+.SH SYNOPSIS
+.B paramsaver
+.SH DESCRIPTION
+
+This component will create up to 1000
+pins of each, of types float, s32 and bit.
+The OUT pins can be overwritten by reading from a file,
+enabling components or widgets attached to those pins 
+to be initialised to known or saved values.
+The IN pins can be connected to any suitable component pin 
+or widget pin
+The received values can be saved to file making settings
+persistant between shutdowns.
+
+Commandline switches:-
+
+\fBloadusr -W paramsaver f=NN s=NN b=NN filename=xxxxxxx onstart=0/1 onexit=0/1\fP
+
+f=NN number of float pins to create, one of IN and OUT for each
+
+s=NN number of s32 pins to create, one of IN and OUT for each
+
+b=NN number of bit pins to create, one of IN and OUT for each
+
+f=xxxxxx filename to save under
+        If none given will default to param.sav
+        Only input filename, not extension or path
+        Will be created as /home/username/linuxcnc/xxxxxxxx.sav
+
+onstart=0/1 If set to 1, will load file at startup to populate the OUT pins (defaults to 0)
+
+onexit=0/1 If set to 1 will write to file at shutdown (defaults to 0)
+
+.SH PINS
+.TP
+.B paramsaver.invalueF-\fIMM\fB\fR float in  (MM=00..~) \fR
+Receives float values
+.TP
+.B paramsaver.outvalueF-\fIMM\fB\fR float out  (MM=00..~) \fR
+Sends float values
+.TP
+.B paramsaver.invalueS-\fIMM\fB\fR float in  (MM=00..~) \fR
+Receives s32 values
+.TP
+.B paramsaver.outvalueS-\fIMM\fB\fR float out  (MM=00..~) \fR
+Sends s32 values
+.TP
+.B paramsaver.invalueB-\fIMM\fB\fR float in  (MM=00..~) \fR
+Receives bit values
+.TP
+.B paramsaver.outvalueB-\fIMM\fB\fR float out  (MM=00..~) \fR
+Sends bit values
+.TP
+.B paramsaver.readtrigger\fR bit in \fR(default: \fI0\fR)
+signal to read from file
+.TP
+.B paramsaver.writetrigger\fR bit in \fR(default: \fI0\fR)
+signal to write to file
+.SH AUTHOR
+
+ArcEye <arceyeATmgwareDOTcoDOTuk>
+.SH LICENSE
+
+GPL
