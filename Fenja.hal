@@ -11,6 +11,8 @@ loadrt not names=not.esignal
 loadrt lut5 names=lut5.servo,lut5.estop
 loadrt estop_latch count=1
 
+loadusr -W paramsaver f=0 s=1 b=0 filename=mms_settings onstart=1 onexit=1
+
 addf hm2_7i76e.0.read          servo-thread
 addf motion-command-handler   servo-thread
 addf motion-controller        servo-thread
