@@ -6,7 +6,7 @@ setp    hm2_7i76e.0.watchdog.timeout_ns 5000000
 
 loadrt pid names=pid.s
 loadrt and2 names=and2.absaugung,and2.relais-luft,and2.relais-schmierung,and2.treiber
-loadrt or2 names=or2.estop-ext,or2.estop,or2.1,or2.flush
+loadrt or2 names=or2.estop-ext,or2.estop,or2.1,or2.flush,or2.forward
 loadrt not names=not.esignal
 loadrt lut5 names=lut5.servo,lut5.estop
 loadrt estop_latch count=1
@@ -22,8 +22,11 @@ addf and2.relais-luft servo-thread
 addf and2.relais-schmierung servo-thread
 addf and2.treiber servo-thread
 
+addf or2.flush servo-thread
+addf or2.1 servo-thread
 addf or2.estop servo-thread
 addf or2.estop-ext servo-thread
+addf or2.forward servo-thread
 
 addf not.esignal servo-thread
 addf lut5.servo servo-thread
@@ -74,7 +77,7 @@ net schmierung-schalten and2.relais-schmierung.out
 
 net treiber-raw and2.treiber.in0
 net program-running and2.treiber.in1
-net treiber-schalten and2.treiber.out hm2_7i76e.0.stepgen.00.enable
+net treiber-schalten and2.treiber.out
 
 # Flush Mode
 

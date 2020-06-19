@@ -74,8 +74,8 @@ setp mux4.fu.runmode.in1 2						# Start Rückwärts (CCW)	-> Sourcetronic Regist
 setp mux4.fu.runmode.in2 6						# Stop (Bremsen...Stop)	-> Sourcetronic Register: 0x0006
 setp mux4.fu.runmode.in3 1						# Start Vorwärts (CW)	-> Sourcetronic Register: 0x0001
 
-net spindle-enable spindle.0.on => mux4.fu.runmode.sel0		#Spindel Stop (Softwarebutton LinuxCNC) -> Parameter Bremsen laden
-net spindle-cw spindle.0.forward => mux4.fu.runmode.sel1		#Spindel Vorwärts (Softwarebutton LinuxCNC) -> Parameter Vorwärts (CW) laden
+net spindle-enable => mux4.fu.runmode.sel0		#Spindel Stop (Softwarebutton LinuxCNC) -> Parameter Bremsen laden
+net spindle-cw => mux4.fu.runmode.sel1		#Spindel Vorwärts (Softwarebutton LinuxCNC) -> Parameter Vorwärts (CW) laden
 net spindle-ccw <= spindle.0.reverse
 net spindle-brake <= spindle.0.brake
 net spindle-runmode mux4.fu.runmode.out => st500.runmode.command	#-> Parameter an mb2hal.ini übergeben und an Sourcetronic senden...

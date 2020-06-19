@@ -1,7 +1,7 @@
 #!/bin/bash
-halcmd setp absaugung-raw False
-halcmd setp luft-raw False
-halcmd setp schmierung-raw False
-halcmd setp treiber-raw False
-halcmd setp flush-mcode False
+halcmd sets absaugung-raw False
+halcmd sets luft-raw False
+halcmd sets schmierung-raw False
+halcmd sets treiber-raw False
+halcmd sets flush-mcode False
 exit 0

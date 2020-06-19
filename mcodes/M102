@@ -1,6 +1,6 @@
 #!/bin/bash
-halcmd setp luft-raw True
-halcmd setp schmierung-raw True
-halcmd setp treiber-raw True
-halcmd setp flush-mcode True
+halcmd sets luft-raw True
+halcmd sets schmierung-raw True
+halcmd sets treiber-raw True
+halcmd sets flush-mcode True
 exit 0

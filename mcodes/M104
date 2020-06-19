@@ -1,3 +1,3 @@
 #!/bin/bash
-halcmd setp absaugung-raw True
+halcmd sets absaugung-raw True
 exit 0

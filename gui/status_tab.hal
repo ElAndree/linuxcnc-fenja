@@ -4,13 +4,15 @@
 ####
 # Setup buttons
 ####
-loadrt buttonrow names=br_spindel,br_dust,br_rotation,br_druckluft,br_flush,br_schmierung
-addf br_spindel servo-thread
+
+loadrt buttonrow names=br_spindle,br_dust,br_rotation,br_druckluft,br_flush,br_schmierung,br_pumpe
+addf br_spindle servo-thread
 addf br_dust servo-thread
 addf br_rotation servo-thread
 addf br_druckluft servo-thread
 addf br_flush servo-thread
 addf br_schmierung servo-thread	
+addf br_pumpe servo-thread
 
 net br_dust_io_auto      br_dust.io-auto  <= status_tab.lb_dust_auto-button
 net br_dust_io_auto_led  br_dust.led-auto => status_tab.lb_dust_auto-light
@@ -60,4 +62,60 @@ net flush-enable br_flush.out
 
 net flush-enable status_tab.led_flush
 
+
+net br_spindle_io_auto      br_spindle.io-auto  <= status_tab.lb_spindel_auto-button
+net br_spindle_io_auto_led  br_spindle.led-auto => status_tab.lb_spindel_auto-light
+net br_spindle_io_off      br_spindle.io-off  <= status_tab.lb_spindel_off-button
+net br_spindle_io_off_led  br_spindle.led-off => status_tab.lb_spindel_off-light
+net br_spindle_io_on      br_spindle.io-on  <= status_tab.lb_spindel_on-button
+net br_spindle_io_on_led  br_spindle.led-on => status_tab.lb_spindel_on-light
+
+net spindle-auto spindle.0.on
+net spindle-auto br_spindle.val-auto
+
+net spindle-enable br_spindle.out
+net spindle-enable status_tab.led_spindel
+
+net br_rotation_io_auto      br_rotation.io-auto  <= status_tab.lb_rotation_auto-button
+net br_rotation_io_auto_led  br_rotation.led-auto => status_tab.lb_rotation_auto-light
+net br_rotation_io_off      br_rotation.io-off  <= status_tab.lb_rotation_left-button
+net br_rotation_io_off_led  br_rotation.led-off => status_tab.lb_rotation_left-light
+net br_rotation_io_on      br_rotation.io-on  <= status_tab.lb_rotation_right-button
+net br_rotation_io_on_led  br_rotation.led-on => status_tab.lb_rotation_right-light
+
+net spindle-cw br_rotation.out
+net spindle-cw status_tab.led_rotation
+
+net spindle-rotation-forward spindle.0.forward
+net spindle-rotation-forward or2.forward.in0
+net spindle-brake or2.forward.in1
+
+net spindle-rotation or2.forward.out br_rotation.val-auto
+
 net fu-actual-drz status_tab.meter_rpm
+net fu-amps status_tab.meter_amps
+net fu-leistung status_tab.meter_leistung
+
+net fu-amps st500.strom.strom.float
+net fu-leistung st500.leistung.leistung.float 
+
+net estop-vfd-error-neg status_tab.led_rs485
+
+
+
+
+net br_pumpe_io_auto      br_pumpe.io-auto  <= status_tab.lb_pumpe_auto-button
+net br_pumpe_io_auto_led  br_pumpe.led-auto => status_tab.lb_pumpe_auto-light
+net br_pumpe_io_off      br_pumpe.io-off  <= status_tab.lb_pumpe_off-button
+net br_pumpe_io_off_led  br_pumpe.led-off => status_tab.lb_pumpe_off-light
+net br_pumpe_io_on      br_pumpe.io-on  <= status_tab.lb_pumpe_on-button
+net br_pumpe_io_on_led  br_pumpe.led-on => status_tab.lb_pumpe_on-light
+
+net treiber-schalten br_pumpe.val-auto 
+net pumpe-enable br_pumpe.out
+net pumpe-enable hm2_7i76e.0.stepgen.00.enable
+net pumpe-enable status_tab.led_pumpe
+
+net drehzahl status_tab.drehzahl_eingabe-s status_tab.text_drehzahl_manuel
+
+net schmierung status_tab.schmierung_eingabe-s status.tab.text_schmierung
