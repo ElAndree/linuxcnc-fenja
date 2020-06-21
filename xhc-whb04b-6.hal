@@ -18,7 +18,7 @@ setp   ilowpass.jog.x.gain  0.01
 setp   ilowpass.jog.y.gain  0.01
 setp   ilowpass.jog.z.gain  0.01
 
-loadrt scale names=scale.axis.x,scale.axis.y,scale.axis.z
+loadrt scale names=scale.axis.x,scale.axis.y,scale.axis.z,scale.schmierung
 addf   scale.axis.x         servo-thread
 addf   scale.axis.y         servo-thread
 addf   scale.axis.z         servo-thread

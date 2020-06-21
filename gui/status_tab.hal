@@ -6,6 +6,7 @@
 ####
 
 loadrt buttonrow names=br_spindle,br_dust,br_rotation,br_druckluft,br_flush,br_schmierung,br_pumpe
+
 addf br_spindle servo-thread
 addf br_dust servo-thread
 addf br_rotation servo-thread
@@ -13,6 +14,21 @@ addf br_druckluft servo-thread
 addf br_flush servo-thread
 addf br_schmierung servo-thread	
 addf br_pumpe servo-thread
+
+addf dust_and servo-thread
+addf druckluft_and servo-thread
+addf schmierung_and servo-thread
+addf pumpe_and servo-thread
+addf spindle_and servo-thread
+addf scale.schmierung servo-thread
+
+setp scale.schmierung.gain 0.8
+
+net machine-is-enabled dust_and.in0
+net machine-is-enabled druckluft_and.in0
+net machine-is-enabled schmierung_and.in0
+net machine-is-enabled pumpe_and.in0
+net machine-is-enabled spindle_and.in0
 
 net br_dust_io_auto      br_dust.io-auto  <= status_tab.lb_dust_auto-button
 net br_dust_io_auto_led  br_dust.led-auto => status_tab.lb_dust_auto-light
@@ -23,8 +39,11 @@ net br_dust_io_on_led  br_dust.led-on => status_tab.lb_dust_on-light
 
 net absaugung-schalten br_dust.val-auto 
 net dust-enable br_dust.out
-net dust-enable hm2_7i76e.0.7i76.0.0.output-01
+net dust-enable dust_and.in1
 net dust-enable status_tab.led_dust
+
+net dust-real-enable dust_and.out
+net dust-real-enable hm2_7i76e.0.7i76.0.0.output-01
 
 net br_druckluft_io_auto      br_druckluft.io-auto  <= status_tab.lb_druckluft_auto-button
 net br_druckluft_io_auto_led  br_druckluft.led-auto => status_tab.lb_druckluft_auto-light
@@ -35,9 +54,12 @@ net br_druckluft_io_on_led  br_druckluft.led-on => status_tab.lb_druckluft_on-li
 
 net luft-schalten br_druckluft.val-auto 
 net druckluft-enable br_druckluft.out
-net druckluft-enable hm2_7i76e.0.7i76.0.0.output-00
+net druckluft-enable druckluft_and.in1
 net druckluft-enable status_tab.led_druckluft
 
+net druckluft-real-enable druckluft_and.out
+net druckluft-real-enable hm2_7i76e.0.7i76.0.0.output-00
+  
 net br_schmierung_io_auto      br_schmierung.io-auto  <= status_tab.lb_schmierung_auto-button
 net br_schmierung_io_auto_led  br_schmierung.led-auto => status_tab.lb_schmierung_auto-light
 net br_schmierung_io_off      br_schmierung.io-off  <= status_tab.lb_schmierung_off-button
@@ -47,8 +69,11 @@ net br_schmierung_io_on_led  br_schmierung.led-on => status_tab.lb_schmierung_on
 
 net schmierung-schalten br_schmierung.val-auto 
 net schmierung-enable br_schmierung.out
-net schmierung-enable hm2_7i76e.0.7i76.0.0.output-15
+net schmierung-enable schmierung_and.in1
 net schmierung-enable status_tab.led_schmierung
+
+net schmierung-real-enable schmierung_and.out
+net schmierung-real-enable hm2_7i76e.0.7i76.0.0.output-15
 
 net br_flush_io_auto      br_flush.io-auto  <= status_tab.lb_flush_auto-button
 net br_flush_io_auto_led  br_flush.led-auto => status_tab.lb_flush_auto-light
@@ -73,8 +98,11 @@ net br_spindle_io_on_led  br_spindle.led-on => status_tab.lb_spindel_on-light
 net spindle-auto spindle.0.on
 net spindle-auto br_spindle.val-auto
 
-net spindle-enable br_spindle.out
-net spindle-enable status_tab.led_spindel
+net spindle-enable-fake br_spindle.out
+net spindle-enable-fake status_tab.led_spindel
+net spindle-enable-fake spindle_and.in1
+
+net spindle-enable spindle_and.out
 
 net br_rotation_io_auto      br_rotation.io-auto  <= status_tab.lb_rotation_auto-button
 net br_rotation_io_auto_led  br_rotation.led-auto => status_tab.lb_rotation_auto-light
@@ -113,9 +141,18 @@ net br_pumpe_io_on_led  br_pumpe.led-on => status_tab.lb_pumpe_on-light
 
 net treiber-schalten br_pumpe.val-auto 
 net pumpe-enable br_pumpe.out
-net pumpe-enable hm2_7i76e.0.stepgen.00.enable
+net pumpe-enable pumpe_and.in1
 net pumpe-enable status_tab.led_pumpe
+
+net pumpe-enable-real hm2_7i76e.0.stepgen.00.enable
+net pumpe-enable-real pumpe_and.out
 
 net drehzahl status_tab.drehzahl_eingabe-s status_tab.text_drehzahl_manuel
 
-net schmierung status_tab.schmierung_eingabe-s status.tab.text_schmierung
+net schmierung status_tab.schmierung_eingabe-s status_tab.text_schmierung
+
+net s-conv status_tab.schmierung_eingabe
+net s-conv scale.schmierung.in
+
+net s-out scale.schmierung.out
+net s-out hm2_7i76e.0.stepgen.00.velocity-cmd
