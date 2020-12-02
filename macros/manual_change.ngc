@@ -36,6 +36,20 @@ O200 endif
 G53 G0 X[#<_ini[TOOLSENSOR]X>] Y[#<_ini[TOOLSENSOR]Y>]
 G53 G0 Z[#<_ini[TOOLSENSOR]Z>]
 
+
+O210 if [#<tool> EQ 3]
+	G53 G0 X[#<_ini[TOOLSENSOR]X> - 12.5] Y[#<_ini[TOOLSENSOR]Y>]
+	G4 P3
+O210 endif
+O220 if [#<tool> EQ 4]
+	G53 G0 X[#<_ini[TOOLSENSOR]X> - 30] Y[#<_ini[TOOLSENSOR]Y>]
+	G4 P3
+O220 endif
+O230 if [#<tool> EQ 5]
+	G53 G0 X[#<_ini[TOOLSENSOR]X> - 15] Y[#<_ini[TOOLSENSOR]Y>]
+	G4 P3
+O230 endif
+
 O300 if [#<_hal[probe.ps_searchvel]> LE 0]
 O300 return [-1] ; indicate searchvel <= 0 
 O300 endif
