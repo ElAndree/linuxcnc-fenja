@@ -1,0 +1,18 @@
+component spindel_rpm2 "spindel rpm2";
+
+pin in bit auto_t;
+pin out float out;
+pin in float in_auto;
+pin in float in_manu;
+
+
+function _ nofp;
+license "GPL"; // indicates GPL v2 or later
+;;
+
+if(auto_t) {
+out=in_auto;
+}
+else {
+out=in_manu;
+}

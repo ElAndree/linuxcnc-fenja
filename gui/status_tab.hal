@@ -6,6 +6,8 @@
 ####
 
 loadrt buttonrow names=br_spindle,br_dust,br_rotation,br_druckluft,br_flush,br_schmierung,br_pumpe
+loadrt schmierung count=1
+loadrt spindel_rpm2 count=1
 
 addf br_spindle servo-thread
 addf br_dust servo-thread
@@ -14,6 +16,8 @@ addf br_druckluft servo-thread
 addf br_flush servo-thread
 addf br_schmierung servo-thread	
 addf br_pumpe servo-thread
+addf schmierung.0 servo-thread
+addf spindel-rpm2.0 servo-thread
 
 addf dust_and servo-thread
 addf druckluft_and servo-thread
@@ -95,6 +99,10 @@ net br_spindle_io_off_led  br_spindle.led-off => status_tab.lb_spindel_off-light
 net br_spindle_io_on      br_spindle.io-on  <= status_tab.lb_spindel_on-button
 net br_spindle_io_on_led  br_spindle.led-on => status_tab.lb_spindel_on-light
 
+net br_spindle_io_auto_led => spindel-rpm2.0.auto-t
+net input-drehzahl spindel-rpm2.0.out
+net spindle-vel-cmd-rpm-abs spindel-rpm2.0.in-auto
+
 net spindle-auto spindle.0.on
 net spindle-auto br_spindle.val-auto
 
@@ -148,11 +156,11 @@ net pumpe-enable-real hm2_7i76e.0.stepgen.00.enable
 net pumpe-enable-real pumpe_and.out
 
 net drehzahl status_tab.drehzahl_eingabe-s status_tab.text_drehzahl_manuel
+net manu-drehzahl status_tab.drehzahl_eingabe spindel-rpm2.0.in-manu
 
-net schmierung status_tab.schmierung_eingabe-s status_tab.text_schmierung
+net schmierung status_tab.schmierung_eingabe status_tab.text_schmierung
 
-net s-conv status_tab.schmierung_eingabe
-net s-conv scale.schmierung.in
+net schmierung scale.schmierung.in
 
 net s-out scale.schmierung.out
 net s-out hm2_7i76e.0.stepgen.00.velocity-cmd

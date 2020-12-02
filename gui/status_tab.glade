@@ -687,6 +687,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="justify">center</property>
+                <property name="label_pin_type">1</property>
                 <property name="text_template">%4d ml/h</property>
               </object>
               <packing>
@@ -705,23 +706,6 @@
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">10</property>
-                <property name="bottom_attach">11</property>
-              </packing>
-            </child>
-            <child>
-              <object class="HAL_HScale" id="schmierung_eingabe">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="adjustment">adjustment2</property>
-                <property name="fill_level">24000</property>
-                <property name="digits">0</property>
-                <property name="draw_value">False</property>
-                <property name="value_pos">left</property>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="right_attach">3</property>
                 <property name="top_attach">10</property>
                 <property name="bottom_attach">11</property>
               </packing>
@@ -941,6 +925,33 @@
             </child>
             <child>
               <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <object class="HALIO_HScale" id="schmierung_eingabe">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="adjustment">adjustment2</property>
+                <property name="round_digits">1</property>
+                <property name="draw_value">False</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">10</property>
+                <property name="bottom_attach">11</property>
+              </packing>
             </child>
             <child>
               <placeholder/>

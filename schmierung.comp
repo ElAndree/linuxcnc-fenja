@@ -1,0 +1,41 @@
+component schmierung "Encoder He";
+
+pin io bit schmierung_real;
+pin io bit count;
+pin io bit flush;
+
+param rw unsigned old_count = 0;
+param rw unsigned s = 0;
+
+function _ nofp;
+license "GPL"; // indicates GPL v2 or later
+;;
+
+if(old_count != count) {
+  if(old_count == 0 && count == 1) {
+    s=s+1;
+  }
+  if(old_count == 0 && count == 2) {
+    s=s-1;
+  }
+  if(old_count == 1 && count == 0) {
+    s=s-1;
+  }
+  if(old_count == 1 && count==2) {
+    s=s+1;
+  }
+  if(old_count == 2 && count==1) {
+    s=s-1;
+  }
+  if(old_count == 2 && count==0) {
+    s=s+1;
+  }
+
+  if(s < 0) {
+    s=0;
+  }
+
+  old_count = count;
+}
+
+schmierung_real=s;

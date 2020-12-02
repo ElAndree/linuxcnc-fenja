@@ -1,26 +1,30 @@
 loadrt [KINS]KINEMATICS
 loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[KINS]JOINTS 
 loadrt hostmot2
-loadrt hm2_eth board_ip="10.10.10.10" config=" num_encoders=0 num_pwmgens=0 num_stepgens=5 sserial_port_0=00xxxx" 
+loadrt hm2_eth board_ip="10.10.10.10" config=" num_encoders=1 num_pwmgens=0 num_stepgens=5 sserial_port_0=00xxxx" 
 setp    hm2_7i76e.0.watchdog.timeout_ns 5000000
 
 loadrt pid names=pid.s
-loadrt and2 names=and2.absaugung,and2.relais-luft,and2.relais-schmierung,and2.treiber,dust_and,druckluft_and,schmierung_and,pumpe_and,spindle_and
+loadrt and2 names=and2.absaugung,and2.relais-luft,and2.relais-schmierung,and2.treiber,dust_and,druckluft_and,schmierung_and,pumpe_and,spindle_and,and2.touch
 loadrt or2 names=or2.estop-ext,or2.estop,or2.1,or2.flush,or2.forward
-loadrt not names=not.esignal
+loadrt not names=not.esignal,not.touch
 loadrt lut5 names=lut5.servo,lut5.estop
 loadrt estop_latch count=1
+loadrt encoder names=encoder.mms
 
 addf hm2_7i76e.0.read          servo-thread
 addf motion-command-handler   servo-thread
 addf motion-controller        servo-thread
 addf pid.s.do-pid-calcs       servo-thread
 addf hm2_7i76e.0.write         servo-thread
+addf encoder.update-counters servo-thread
+addf encoder.capture-position servo-thread
 
 addf and2.absaugung servo-thread
 addf and2.relais-luft servo-thread
 addf and2.relais-schmierung servo-thread
 addf and2.treiber servo-thread
+addf and2.touch servo-thread
 
 addf or2.flush servo-thread
 addf or2.1 servo-thread
@@ -29,6 +33,7 @@ addf or2.estop-ext servo-thread
 addf or2.forward servo-thread
 
 addf not.esignal servo-thread
+addf not.touch servo-thread
 addf lut5.servo servo-thread
 addf lut5.estop servo-thread
 
@@ -51,7 +56,7 @@ net estop-ext-sig-neg lut5.estop.in-1 <= or2.estop.out
 net estop-internal-sig => lut5.estop.in-2
 net estop-ext-1 or2.estop-ext.in0 <= hm2_7i76e.0.7i76.0.0.input-13-not
 net estop-ext-2 or2.estop-ext.in1 <= hm2_7i76e.0.7i76.0.0.input-15-not
-net toolsensor-error hm2_7i76e.0.7i76.0.0.input-08-not => lut5.estop.in-3
+#net toolsensor-error hm2_7i76e.0.7i76.0.0.input-08-not => lut5.estop.in-3
 
 net program-running halui.program.is-running
 
@@ -93,12 +98,20 @@ net servo-3 hm2_7i76e.0.7i76.0.0.input-05 => lut5.servo.in-2
 # probe signal (vers WL+WZLS)
 net toolsensor => or2.1.in0
 net touchprobe => or2.1.in1 
-net toolsensor <= hm2_7i76e.0.7i76.0.0.input-04-not
-net touchprobe <= hm2_7i76e.0.7i76.0.0.input-20-not
+net toolsensor <= hm2_7i76e.0.7i76.0.0.input-04
+net touchprobe-raw and2.touch.in1 <= hm2_7i76e.0.7i76.0.0.input-20
+net touchprobe and2.touch.out
 net probe-input or2.1.out motion.probe-input
 
 #probe error signal(vers WL)
 net touchprobe-error motion.digital-in-00 <= hm2_7i76e.0.7i76.0.0.input-21-not
+net touchprobe-error not.touch.in
+net touchprobe-error-not not.touch.out
+net touchprobe-error-not and2.touch.in0
+
+#MMS Encoder
+net encoder-phase-a hm2_7i76e.0.encoder.00.input-a encoder.mms.phase-A 
+net encoder-phase-b hm2_7i76e.0.encoder.00.input-b encoder.mms.phase-B
 
 #  ---motion control signals---
 net in-position               <=  motion.in-position
