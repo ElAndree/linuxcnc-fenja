@@ -7,6 +7,7 @@
 
 loadrt buttonrow names=br_spindle,br_dust,br_rotation,br_druckluft,br_flush,br_schmierung,br_pumpe
 loadrt schmierung count=1
+loadrt scale names=scale.schmierung,scale.amps,scale.leistung
 loadrt spindel_rpm2 count=1
 
 addf br_spindle servo-thread
@@ -19,6 +20,8 @@ addf br_pumpe servo-thread
 addf schmierung.0 servo-thread
 addf spindel-rpm2.0 servo-thread
 
+addf scale.amps servo-thread
+addf scale.leistung servo-thread
 addf dust_and servo-thread
 addf druckluft_and servo-thread
 addf schmierung_and servo-thread
@@ -27,6 +30,8 @@ addf spindle_and servo-thread
 addf scale.schmierung servo-thread
 
 setp scale.schmierung.gain 0.8
+setp scale.amps.gain 0.01
+setp scale.leistung.gain 0.1
 
 net machine-is-enabled dust_and.in0
 net machine-is-enabled druckluft_and.in0
@@ -129,16 +134,13 @@ net spindle-brake or2.forward.in1
 net spindle-rotation or2.forward.out br_rotation.val-auto
 
 net fu-actual-drz status_tab.meter_rpm
-net fu-amps status_tab.meter_amps
-net fu-leistung status_tab.meter_leistung
+net fu-amps-scaled scale.amps.out status_tab.meter_amps
+net fu-drehmoment-scaled scale.leistung.out status_tab.meter_drehmoment
 
-net fu-amps st500.strom.strom.float
-net fu-leistung st500.leistung.leistung.float 
+net fu-amps scale.amps.in st500.strom.strom.float
+net fu-drehmoment scale.leistung.in st500.drehmoment.drehmoment.float 
 
 net estop-vfd-error-neg status_tab.led_rs485
-
-
-
 
 net br_pumpe_io_auto      br_pumpe.io-auto  <= status_tab.lb_pumpe_auto-button
 net br_pumpe_io_auto_led  br_pumpe.led-auto => status_tab.lb_pumpe_auto-light

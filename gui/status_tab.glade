@@ -77,20 +77,18 @@
               </packing>
             </child>
             <child>
-              <object class="HAL_Meter" id="meter_leistung">
+              <object class="HAL_Meter" id="meter_drehmoment">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="bg_color">#ffffffffffff</property>
-                <property name="label">Leistung</property>
-                <property name="majorscale">500</property>
-                <property name="max">4000</property>
-                <property name="minorscale">250</property>
-                <property name="sublabel">[W]</property>
+                <property name="label">Drehmoment</property>
+                <property name="minorscale">5</property>
+                <property name="sublabel">[%]</property>
                 <property name="text_template">%4.1f</property>
-                <property name="value">100</property>
-                <property name="z0_border">3000</property>
+                <property name="value">10</property>
+                <property name="z0_border">80</property>
                 <property name="z0_color">#000080800000</property>
-                <property name="z1_border">3500</property>
+                <property name="z1_border">90</property>
                 <property name="z1_color">#ffffffff0000</property>
                 <property name="z2_color">#ffff00000000</property>
               </object>
@@ -952,6 +950,9 @@
                 <property name="top_attach">10</property>
                 <property name="bottom_attach">11</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>

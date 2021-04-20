@@ -4,6 +4,7 @@ loadrt hostmot2
 loadrt hm2_eth board_ip="10.10.10.10" config=" num_encoders=1 num_pwmgens=0 num_stepgens=5 sserial_port_0=00xxxx" 
 setp    hm2_7i76e.0.watchdog.timeout_ns 5000000
 
+
 loadrt pid names=pid.s
 loadrt and2 names=and2.absaugung,and2.relais-luft,and2.relais-schmierung,and2.treiber,dust_and,druckluft_and,schmierung_and,pumpe_and,spindle_and,and2.touch
 loadrt or2 names=or2.estop-ext,or2.estop,or2.1,or2.flush,or2.forward
