@@ -5,7 +5,7 @@
 # Setup buttons
 ####
 
-loadrt buttonrow names=br_spindle,br_dust,br_rotation,br_druckluft,br_flush,br_schmierung,br_pumpe
+loadrt buttonrow names=br_spindle,br_dust,br_rotation,br_druckluft,br_flush,br_schmierung,br_pumpe,br_wartung
 loadrt schmierung count=1
 loadrt scale names=scale.schmierung,scale.amps,scale.leistung
 loadrt spindel_rpm2 count=1
@@ -17,6 +17,7 @@ addf br_druckluft servo-thread
 addf br_flush servo-thread
 addf br_schmierung servo-thread	
 addf br_pumpe servo-thread
+addf br_wartung servo-thread
 addf schmierung.0 servo-thread
 addf spindel-rpm2.0 servo-thread
 
@@ -32,6 +33,10 @@ addf scale.schmierung servo-thread
 setp scale.schmierung.gain 0.8
 setp scale.amps.gain 0.01
 setp scale.leistung.gain 0.1
+
+
+setp schmierung.0.max-flush 650
+setp schmierung.0.max 500
 
 net machine-is-enabled dust_and.in0
 net machine-is-enabled druckluft_and.in0
@@ -95,7 +100,7 @@ net flush-schalten br_flush.val-auto
 net flush-enable br_flush.out
 
 net flush-enable status_tab.led_flush
-
+net flush-enable schmierung.0.flush
 
 net br_spindle_io_auto      br_spindle.io-auto  <= status_tab.lb_spindel_auto-button
 net br_spindle_io_auto_led  br_spindle.led-auto => status_tab.lb_spindel_auto-light
@@ -160,9 +165,21 @@ net pumpe-enable-real pumpe_and.out
 net drehzahl status_tab.drehzahl_eingabe-s status_tab.text_drehzahl_manuel
 net manu-drehzahl status_tab.drehzahl_eingabe spindel-rpm2.0.in-manu
 
-net schmierung status_tab.schmierung_eingabe status_tab.text_schmierung
+#net schmierung status_tab.schmierung_eingabe status_tab.text_schmierung
 
-net schmierung scale.schmierung.in
+net schmierung status_tab.schmierung_eingabe
+net schmierung schmierung.0.out-vel scale.schmierung.in
+net schmierung status_tab.text_schmierung
+
+net comp-schmierung-reset schmierung.0.reset encoder.mms.reset
+net comp-schmierung-position schmierung.0.position encoder.mms.position
 
 net s-out scale.schmierung.out
 net s-out hm2_7i76e.0.stepgen.00.velocity-cmd
+
+net br_wartung_io_on br_wartung.io-on <= status_tab.lb_wartung_on-button
+net br_wartung_io_on_led br_wartung.led-on <= status_tab.lb_wartung_on-light
+net br_wartung_io_off br_wartung.io-off <= status_tab.lb_wartung_off-button
+net br_wartung_io_off_led br_wartung.led-off <= status_tab.lb_wartung_off-light
+net wartungsmodus br_wartung.out
+net wartungsmodus status_tab.led_wartung

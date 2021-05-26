@@ -104,7 +104,7 @@
           <object class="GtkTable" id="table2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="n_rows">11</property>
+            <property name="n_rows">12</property>
             <property name="n_columns">3</property>
             <child>
               <placeholder/>
@@ -928,15 +928,6 @@
               <placeholder/>
             </child>
             <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
               <object class="HALIO_HScale" id="schmierung_eingabe">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -956,6 +947,91 @@
             </child>
             <child>
               <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <object class="HAL_LED" id="led_wartung">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="blink_when_off">True</property>
+                <property name="led_blink_rate">0</property>
+              </object>
+              <packing>
+                <property name="top_attach">11</property>
+                <property name="bottom_attach">12</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="hbox9">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="homogeneous">True</property>
+                <child>
+                  <object class="HAL_LightButton" id="lb_wartung_off">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="border_width">3</property>
+                    <property name="button_on_text" translatable="yes">Aus</property>
+                    <property name="button_text" translatable="yes">Aus</property>
+                    <property name="corner_radius">1</property>
+                    <property name="font_off_color">#000000000000</property>
+                    <property name="font_on_color">#000000000000</property>
+                    <property name="light_off_color">#e6e6e6e6e6e6</property>
+                    <property name="light_on_color">#cb7800000000</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="HAL_LightButton" id="lb_wartung_on">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="border_width">3</property>
+                    <property name="button_on_text" translatable="yes">An</property>
+                    <property name="button_text" translatable="yes">An</property>
+                    <property name="corner_radius">1</property>
+                    <property name="font_off_color">#000000000000</property>
+                    <property name="font_on_color">#000000000000</property>
+                    <property name="light_off_color">#e6e6e6e6e6e6</property>
+                    <property name="light_on_color">#0000cbcb0000</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">11</property>
+                <property name="bottom_attach">12</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <object class="HAL_Label" id="hal_label9">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0.4699999988079071</property>
+                <property name="yalign">0.49000000953674316</property>
+                <property name="label" translatable="yes">Wartungsmodus</property>
+                <property name="text_template"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">11</property>
+                <property name="bottom_attach">12</property>
+              </packing>
             </child>
           </object>
           <packing>

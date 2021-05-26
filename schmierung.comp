@@ -1,41 +1,38 @@
-component schmierung "Encoder He";
+component schmierung "schmierung";
 
-pin io bit schmierung_real;
-pin io bit count;
-pin io bit flush;
-
-param rw unsigned old_count = 0;
-param rw unsigned s = 0;
+pin in bit flush;
+pin io float out_vel = 300;
+pin out float out_save;
+pin out bit reset;
+pin in float max_flush;
+pin in float max;
+pin in float position;
 
 function _ nofp;
 license "GPL"; // indicates GPL v2 or later
 ;;
 
-if(old_count != count) {
-  if(old_count == 0 && count == 1) {
-    s=s+1;
-  }
-  if(old_count == 0 && count == 2) {
-    s=s-1;
-  }
-  if(old_count == 1 && count == 0) {
-    s=s-1;
-  }
-  if(old_count == 1 && count==2) {
-    s=s+1;
-  }
-  if(old_count == 2 && count==1) {
-    s=s-1;
-  }
-  if(old_count == 2 && count==0) {
-    s=s+1;
-  }
 
-  if(s < 0) {
-    s=0;
-  }
-
-  old_count = count;
+if(position != 0 && !flush) {
+ out_vel = out_vel + position;
+ reset = true;
 }
-
-schmierung_real=s;
+else {
+ reset = false;
+}
+if(flush) {
+if(out_save == -1) out_save = out_vel;
+out_vel=max_flush;
+}
+else {
+if(out_save != -1) {
+out_vel = out_save;
+out_save = -1;
+}
+if(out_vel < 0) {
+out_vel=0;
+}
+if(out_vel > max) {
+out_vel=max;
+}
+}

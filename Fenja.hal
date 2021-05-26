@@ -7,7 +7,7 @@ setp    hm2_7i76e.0.watchdog.timeout_ns 5000000
 
 loadrt pid names=pid.s
 loadrt and2 names=and2.absaugung,and2.relais-luft,and2.relais-schmierung,and2.treiber,dust_and,druckluft_and,schmierung_and,pumpe_and,spindle_and,and2.touch
-loadrt or2 names=or2.estop-ext,or2.estop,or2.1,or2.flush,or2.forward
+loadrt or2 names=or2.estop-ext,or2.estop,or2.1,or2.flush,or2.forward,or2.wartung
 loadrt not names=not.esignal,not.touch
 loadrt lut5 names=lut5.servo,lut5.estop
 loadrt estop_latch count=1
@@ -28,6 +28,7 @@ addf and2.treiber servo-thread
 addf and2.touch servo-thread
 
 addf or2.flush servo-thread
+addf or2.wartung servo-thread
 addf or2.1 servo-thread
 addf or2.estop servo-thread
 addf or2.estop-ext servo-thread
@@ -45,11 +46,14 @@ setp hm2_7i76e.0.stepgen.timer-number 1
 setp lut5.servo.function 0xfffffffe
 setp lut5.estop.function 0xfffffffe
 
+#setp encoder.mms.index-enable true
+#setp encoder.mms.counter-mode true
+
 # Not-Halt/Stop
 net estop-ext or2.estop-ext.out => or2.estop.in1
 net estop-reset estop-latch.0.reset <=  iocontrol.0.user-request-enable
 net estop-signal-neg not.esignal.in <= lut5.estop.out 
-net estop-signal-out estop-latch.0.ok-out => iocontrol.0.emc-enable-in
+net estop-signal-out estop-latch.0.ok-out => or2.wartung.in1
 net estop-signal not.esignal.out => estop-latch.0.ok-in
 net estop-vfd-error => or2.estop.in0
 net estop-servo lut5.estop.in-0 <= lut5.servo.out
@@ -58,6 +62,9 @@ net estop-internal-sig => lut5.estop.in-2
 net estop-ext-1 or2.estop-ext.in0 <= hm2_7i76e.0.7i76.0.0.input-13-not
 net estop-ext-2 or2.estop-ext.in1 <= hm2_7i76e.0.7i76.0.0.input-15-not
 #net toolsensor-error hm2_7i76e.0.7i76.0.0.input-08-not => lut5.estop.in-3
+
+net wartungsmodus or2.wartung.in0
+net estop-after-wartung or2.wartung.out iocontrol.0.emc-enable-in
 
 net program-running halui.program.is-running
 
@@ -88,7 +95,7 @@ net treiber-schalten and2.treiber.out
 # Flush Mode
 
 net flush-mcode or2.flush.in0
-net flush-knopf hm2_7i76e.0.7i76.0.0.input-22 or2.flush.in1
+net flush-knopf hm2_7i76e.0.7i76.0.0.input-22-not or2.flush.in1
 net flush-schalten or2.flush.out
 
 # Servo Endstufenfehler
@@ -111,8 +118,9 @@ net touchprobe-error-not not.touch.out
 net touchprobe-error-not and2.touch.in0
 
 #MMS Encoder
-net encoder-phase-a hm2_7i76e.0.encoder.00.input-a encoder.mms.phase-A 
-net encoder-phase-b hm2_7i76e.0.encoder.00.input-b encoder.mms.phase-B
+net encoder-phase-a hm2_7i76e.0.encoder.00.input-a encoder.mms.phase-A
+net encoder-phase-b hm2_7i76e.0.encoder.00.input-index encoder.mms.phase-B
+#net encoder-phase-index hm2_7i76e.0.encoder.00.input-index encoder.mms.phase-Z
 
 #  ---motion control signals---
 net in-position               <=  motion.in-position

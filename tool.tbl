@@ -8,7 +8,7 @@ T9 P0 D8.000000 Z+156.451700 ;Holz-Schrubbfräser
 T10 P0 D6.000000 Z+144.220300 ;Holz-Fräser kurz 
 T11 P0 D6.000000 Z+170.576200 ;Holz-Fräser lang 
 T12 P0 D16.000000 ;Holz-Senker 
-T13 P0 D3.000000 Z+133.040500 ;KST-Fräser Pro Acryl 
+T13 P0 D3.000000 Z+136.143800 ;KST-Fräser Pro Acryl 
 T14 P0 D1.000000 Z+132.879000 ;KST-Fräser Pro Acryl 
 T15 P0 D3.000000 Z+136.909300 ;KST-Frässtichel 30° 
 T16 P0 D8.000000 ;Metall-Fräser 
@@ -37,5 +37,6 @@ T39 P0 D1.000000 ;VHM-Frässtichel 30°
 T40 P0 D1.000000 ;VHM-Fräser Diamantverzahnt 
 T41 P0 D1.500000 ;VHM-Fräser Diamantverzahnt 
 T42 P0 D2.000000 ;VHM-Fräser Diamantverzahnt 
-T43 P0 D4.000000 Z+138.894000 ;VHM-Schaftfräser NL30mm 
-T44 P0 D5.000000 Z+134.988167 ;VHM-Schaftfräser NL30mm 
+T43 P0 D4.000000 Z+144.045200 ;VHM-Schaftfräser NL30mm 
+T44 P0 D5.000000 Z+134.988200 ;VHM-Schaftfräser NL30mm 
+T45 P0 D4.000000 Z+144.034000 ;comment 
